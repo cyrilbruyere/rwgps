@@ -1,0 +1,22 @@
+name : rwgps_report
+
+on:
+  schedule:
+    - cron : '0 15 * * 1,3,5'
+  workflow_dispatch:
+
+jobs:
+  build:
+    run-on: ubuntu-latest
+    steps:
+      - uses: action/checkout@v2
+      - uses: action/setup-python@v2
+        with python-version: 3.9
+      - name: Run RWGPS script
+        env:
+          user_email: ${{ secrets.user_email }}
+          email_token: ${{ secrets.email_tocken }}
+          api_key: ${{ secrets.api_key }}
+          api_token: ${{ secrets.api_token }}
+          url_user: ${{ secrets.url_user }}
+          url_trips: ${{ secrets.url_trips }}

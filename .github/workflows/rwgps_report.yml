@@ -16,7 +16,7 @@ jobs:
       - name: Run RWGPS script
         env:
           user_email: ${{ secrets.user_email }}
-          email_token: ${{ secrets.email_tocken }}
+          email_token: ${{ secrets.email_token }}
           api_key: ${{ secrets.api_key }}
           api_token: ${{ secrets.api_token }}
           url_user: ${{ secrets.url_user }}

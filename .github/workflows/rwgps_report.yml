@@ -13,7 +13,11 @@ jobs:
       - uses: actions/setup-python@main
         with:
           python-version: 3.x
-      - name: Run RWGPS script
+      - name: install packages
+        run:
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: run rwgps
         env:
           user_email: ${{ secrets.user_email }}
           email_token: ${{ secrets.email_token }}

@@ -11,17 +11,17 @@
 import smtplib, ssl
 import os
 
-api_key = os.environ.get('api_key')
-api_token = os.environ.get('api_token')
+# api_key = os.environ.get('api_key')
+# api_token = os.environ.get('api_token')
 
-# NB : le token est régulièrement annulé. Pour le générer : https://r...gps.com/api
-params = {"apikey": api_key,
-          "version": "2",
-          "auth_token": api_token
-          }
+# # NB : le token est régulièrement annulé. Pour le générer : https://r...gps.com/api
+# params = {"apikey": api_key,
+#           "version": "2",
+#           "auth_token": api_token
+#           }
 
-url_user = os.environ.get('url_user')
-url_trips = os.environ.get('url_trips')
+# url_user = os.environ.get('url_user')
+# url_trips = os.environ.get('url_trips')
 
 # response = requests.get(url_user, params = params, verify = False)
 # data = response.json()
@@ -196,23 +196,19 @@ url_trips = os.environ.get('url_trips')
 
 message = """
 Subject = Ride Status
-Bonjour,<br><br>
-Ride status pour le mois en cours : <strong>image h</strong><br><br>
-<img src='cid:MyId1'><br>
-<br>
-Ride status pour l'année en cours : <strong>image h</strong><br><br>
-<img src='cid:MyId0'><br><br>
-gears :<br>liste<br>
-names :<br>list<br>
-<br>
+Ceci est un test.
 """
+
 port = 465
 smtp_server = 'smtp.gmail.com'
 user_email = os.environ.get('user_email')
 email_token = os.environ.get('email_token')
 
-context = ssl.create_default_context()
-with smtplib.SMTP_SSL(smtp_server, port, context = context) as server:
+try:
+    context = ssl.create_default_context() # ne fonctionne pas
+    server = smtplib.SMTP_SSL(smtp_server, port, context = context)
     server.login(user_email, email_token)
     server.sendmail(user_email, user_email, message)
+except:
+    print('Something went wrong...')
 

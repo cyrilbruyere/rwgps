@@ -211,9 +211,15 @@ total_mtd = round(status_mtd.values.sum(), 1)
 # PLOTLY express
 fig = px.imshow(
     status_ytd.values,
+    x = status_ytd.columns,
+    y = status_ytd.index,
     text_auto = '.1f',
-    color_continuous_scale = 'Greys',
+    color_continuous_scale = 'RdBu_r',
     aspect = 'auto')
+
+fig.update_layout(coloraxis_showscale = False)
+fig.update_xaxes(side = 'top')
+
 
 # Save image
 fig.write_image('ytd.png')

@@ -206,8 +206,6 @@ Ceci est un test.
 
 msg = MIMEText(body)
 msg['Subject'] = 'Ride status'
-msg['From'] = user_email
-msg['To'] = ', '.join(user_email)
 
 try:
     context = ssl.create_default_context()

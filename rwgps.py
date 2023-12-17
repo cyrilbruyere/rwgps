@@ -3,10 +3,11 @@ import requests
 # Cleaning
 import pandas as pd
 # # Graphics
-import plotly.graph_objects as go
+# import plotly.graph_objects as go
+import plotly.express as px
 # import seaborn as sns
 # import matplotlib.pyplot as plt
-import base64
+# import base64
 # Built in
 # from pathlib import Path
 import datetime as dt
@@ -197,12 +198,22 @@ total_mtd = round(status_mtd.values.sum(), 1)
 # """.format(total_mtd, total_ytd, unique_gears, unique_names)
 # mail.Send()
 
-# PLOTLY image
-fig = go.Figure()
-fig.add_trace(go.Heatmap(
+# # PLOTLY graph object
+# fig = go.Figure()
+# fig.add_trace(go.Heatmap(
+#     z = status_ytd.values,
+#     x = status_ytd.columns,
+#     y = status_ytd.index,
+#     text = status_ytd.values,
+#     texttemplate="%{text}",
+#     textfont={"size":20}))
+
+# PLOTLY express
+fig = px.imshow(
     z = status_ytd.values,
-    x = status_ytd.columns,
-    y = status_ytd.index))
+    text_auto = '.1f',
+    color_continuous_scale = 'Greys',
+    aspect = 'auto')
 
 # Save image
 fig.write_image('ytd.png')

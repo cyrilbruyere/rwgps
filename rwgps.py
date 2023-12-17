@@ -213,8 +213,11 @@ with open('ytd.png', 'rb') as file:
     msgImage = MIMEImage(file.read())
     msgImage.add_header('Content-ID', '<ytd>')
 
-msg = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
+msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
+
+msg = MIMEMultipart()
 msg['Subject'] = 'Ride status'
+msg.attach(msgtext)
 msg.attach(msgImage)
 
 port = 465
@@ -223,7 +226,7 @@ user_email = os.environ.get('user_email')
 email_token = os.environ.get('email_token')
 
 try:
-    context = ssl.create_default_context()
+    context = ssl.create_default_context() # ne fonctionne pas
     server = smtplib.SMTP_SSL(smtp_server, port, context = context)
     server.login(user_email, email_token)
     server.sendmail(user_email, user_email, msg.as_string())

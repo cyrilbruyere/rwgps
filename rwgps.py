@@ -214,7 +214,8 @@ fig = px.imshow(
     x = status_ytd.columns,
     y = status_ytd.index,
     text_auto = '.1f',
-    color_continuous_scale = 'RdBu_r',
+    color_continuous_scale = ["green", "white", "red"], #'RdBu_r',
+    color_continuous_midpoint = 0,
     aspect = 'auto')
 
 fig.update_layout(coloraxis_showscale = False)

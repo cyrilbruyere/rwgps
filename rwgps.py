@@ -210,7 +210,7 @@ total_mtd = round(status_mtd.values.sum(), 1)
 
 # PLOTLY express
 fig = px.imshow(
-    z = status_ytd.values,
+    status_ytd.values,
     text_auto = '.1f',
     color_continuous_scale = 'Greys',
     aspect = 'auto')

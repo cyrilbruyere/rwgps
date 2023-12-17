@@ -199,7 +199,7 @@ total_mtd = round(status_mtd.values.sum(), 1)
 
 # PLOTLY image
 fig = go.Figure()
-fig.add_trace(go.heatmap(
+fig.add_trace(go.Heatmap(
     z = status_ytd.values,
     x = status_ytd.columns,
     y = status_ytd.index))

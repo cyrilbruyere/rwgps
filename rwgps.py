@@ -3,13 +3,17 @@ import requests
 # Cleaning
 import pandas as pd
 # # Graphics
+import plotly.graph_objects as go
 # import seaborn as sns
 # import matplotlib.pyplot as plt
+import base64
 # Built in
-from pathlib import Path
+# from pathlib import Path
 import datetime as dt
 import smtplib, ssl
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 import os
 
 api_key = os.environ.get('api_key')
@@ -80,8 +84,6 @@ trips['RATIO'] = trips['ELEVATION'] / trips['DISTANCE']
 trips = trips[['DATE', 'NAME', 'GEAR', 'DISTANCE', 'ELEVATION', 'DUREE', 'SPEED', 'CADENCE', 'HR', 'WATTS', 'CALORIES', 'YYYY', 'MM', 'SEASON', 'RATIO']]
 
 trips = trips[trips['NAME'] !=  'NOE']
-
-# trips.to_csv('./data/rwgps/trips.csv', sep = ';', index = False)
 
 # YTD, MTD
 ytd = dt.date.today().year
@@ -195,17 +197,30 @@ total_mtd = round(status_mtd.values.sum(), 1)
 # """.format(total_mtd, total_ytd, unique_gears, unique_names)
 # mail.Send()
 
+# PLOTLY image
+fig = go.Figure()
+fig.add_trace(go.heatmap(
+    z = status_ytd.values,
+    x = status_ytd.columns,
+    y = status_ytd.index))
+
+# Save image
+fig.write_image('ytd.png')
+
+# Base64 Encode
+with open('ytd.png', 'rb') as file:
+    # encode64 = base64.b64encode(file.read())
+    msgImage = MIMEImage(file.read())
+    msgImage.add_header('Content-ID', '<ytd>')
+
+msg = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
+msg['Subject'] = 'Ride status'
+msg.attach(msgImage)
+
 port = 465
 smtp_server = 'smtp.gmail.com'
 user_email = os.environ.get('user_email')
 email_token = os.environ.get('email_token')
-
-body = """
-Ceci est un test.
-"""
-
-msg = MIMEText(body)
-msg['Subject'] = 'Ride status'
 
 try:
     context = ssl.create_default_context()

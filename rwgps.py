@@ -9,6 +9,7 @@ import pandas as pd
 from pathlib import Path
 import datetime as dt
 import smtplib, ssl
+from email.mime.text import MIMEText
 import os
 
 api_key = os.environ.get('api_key')
@@ -194,21 +195,25 @@ total_mtd = round(status_mtd.values.sum(), 1)
 # """.format(total_mtd, total_ytd, unique_gears, unique_names)
 # mail.Send()
 
-message = """
-Subject = Ride Status
-Ceci est un test.
-"""
-
 port = 465
 smtp_server = 'smtp.gmail.com'
 user_email = os.environ.get('user_email')
 email_token = os.environ.get('email_token')
 
+body = """
+Ceci est un test.
+"""
+
+msg = MIMEText(body)
+msg['Subject'] = 'Ride status'
+msg['From'] = user_email
+msg['To'] = ', '.join(user_email)
+
 try:
-    context = ssl.create_default_context() # ne fonctionne pas
+    context = ssl.create_default_context()
     server = smtplib.SMTP_SSL(smtp_server, port, context = context)
     server.login(user_email, email_token)
-    server.sendmail(user_email, user_email, message)
+    server.sendmail(user_email, user_email, msg.as_string())
 except:
     print('Something went wrong...')
 

@@ -149,9 +149,9 @@ fig = px.imshow(
     color_continuous_midpoint = 0,
     aspect = 'auto')
 
-fig.update_layout(coloraxis_showscale = False,
-                  textfont = dict(size=18, color="white"))
+fig.update_layout(coloraxis_showscale = False)
 fig.update_xaxes(side = 'top')
+fig.update_traces(textfont_size=20)
 
 # Save image
 fig.write_image('ytd.png')

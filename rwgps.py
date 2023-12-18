@@ -3,13 +3,8 @@ import requests
 # Cleaning
 import pandas as pd
 # # Graphics
-# import plotly.graph_objects as go
 import plotly.express as px
-# import seaborn as sns
-# import matplotlib.pyplot as plt
-# import base64
 # Built in
-# from pathlib import Path
 import datetime as dt
 import smtplib, ssl
 from email.mime.text import MIMEText
@@ -144,47 +139,23 @@ status_mtd = rides_mtd - target_mtd
 total_ytd = round(status_ytd.values.sum(), 1)
 total_mtd = round(status_mtd.values.sum(), 1)
 
-# # HEATMAPS YTD, MTD
-# chemin_ytd = Path.cwd() / 'data' / 'ytd.png'
-# chemin_mtd = Path.cwd() / 'data' / 'mtd.png'
+# HEATMAPS YTD, MTD
+fig = px.imshow(
+    status_ytd.values,
+    x = status_ytd.columns,
+    y = status_ytd.index,
+    text_auto = '.1f',
+    color_continuous_scale = ['red', 'white', 'green'],
+    color_continuous_midpoint = 0,
+    aspect = 'auto')
 
-# chemin_ytd = str(chemin_ytd).replace('\\', '/')
-# chemin_mtd = str(chemin_mtd).replace('\\', '/')
+fig.update_layout(coloraxis_showscale = False)
+fig.update_xaxes(side = 'top')
 
-# graph_path = [chemin_ytd, chemin_mtd]
-
-# ax1 = sns.heatmap(status_ytd,
-#             annot = True,
-#             fmt='.1f',
-#             cmap = 'RdBu',
-#             center = 0,
-#             cbar = False,
-#             square = True)
-# # ax1.tick_params(axis='x', colors='white')
-# # ax1.tick_params(axis='y', colors='white')
-# plt.savefig(graph_path[0])
-# plt.close()
-
-# ax2 = sns.heatmap(status_mtd,
-#             annot = True,
-#             fmt='.1f',
-#             cmap = 'RdBu',
-#             center = 0,
-#             cbar = False,
-#             square = True)
-# # ax2.tick_params(axis='x', colors='white')
-# # ax2.tick_params(axis='y', colors='white')
-# plt.savefig(graph_path[1])
+# Save image
+fig.write_image('ytd.png')
 
 # ENVOI DE L'EMAIL
-# outlook = win32.Dispatch('outlook.application')
-# mail = outlook.CreateItem(0)
-# mail.To = user_email
-# mail.Subject = 'Ride Status'
-# attachment_0 = mail.Attachments.Add(graph_path[0])
-# attachment_0.PropertyAccessor.SetProperty('http://schemas.microsoft.com/mapi/proptag/0x3712001F', 'MyId0')
-# attachment_1 = mail.Attachments.Add(graph_path[1])
-# attachment_1.PropertyAccessor.SetProperty('http://schemas.microsoft.com/mapi/proptag/0x3712001F', 'MyId1')
 # mail.HTMLBody = """
 #     Bonjour,<br><br>
 #     Ride status pour le mois en cours : <strong>{} h</strong><br><br>
@@ -196,41 +167,14 @@ total_mtd = round(status_mtd.values.sum(), 1)
 #     names :<br>{}<br>
 #     <br>
 # """.format(total_mtd, total_ytd, unique_gears, unique_names)
-# mail.Send()
 
-# # PLOTLY graph object
-# fig = go.Figure()
-# fig.add_trace(go.Heatmap(
-#     z = status_ytd.values,
-#     x = status_ytd.columns,
-#     y = status_ytd.index,
-#     text = status_ytd.values,
-#     texttemplate="%{text}",
-#     textfont={"size":20}))
-
-# PLOTLY express
-fig = px.imshow(
-    status_ytd.values,
-    x = status_ytd.columns,
-    y = status_ytd.index,
-    text_auto = '.1f',
-    color_continuous_scale = ["green", "white", "red"], #'RdBu_r',
-    color_continuous_midpoint = 0,
-    aspect = 'auto')
-
-fig.update_layout(coloraxis_showscale = False)
-fig.update_xaxes(side = 'top')
-
-
-# Save image
-fig.write_image('ytd.png')
-
-# Base64 Encode
+# Image à envoyer
 with open('ytd.png', 'rb') as file:
     # encode64 = base64.b64encode(file.read())
     msgImage = MIMEImage(file.read())
     msgImage.add_header('Content-ID', '<ytd>')
 
+# Texte à envoyer
 msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 
 msg = MIMEMultipart()

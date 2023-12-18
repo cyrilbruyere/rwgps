@@ -111,7 +111,7 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [0, 0, 0, 0, 0]})
+                       'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
 rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
 rides_ytd = rides_ytd.groupby(['GEAR', 'NAME']).sum()
 rides_ytd = rides_ytd.unstack('NAME')
@@ -125,7 +125,7 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [0, 0, 0, 0, 0]})
+                       'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
 rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
 rides_mtd = rides_mtd.groupby(['GEAR', 'NAME']).sum()
 rides_mtd = rides_mtd.unstack('NAME')

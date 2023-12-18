@@ -134,7 +134,7 @@ rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd
 # status_mtd = rides_mtd - target_mtd
-status_mtd = - target_mtd
+status_mtd = rides_mtd
 
 status_ytd = status_ytd.replace(0, np.nan)
 status_mtd = status_mtd.replace(0, np.nan)

@@ -135,14 +135,8 @@ rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 status_ytd = rides_ytd.fillna(0) - target_ytd
 status_mtd = rides_mtd.fillna(0) - target_mtd
 
-print(rides_mtd)
-print(target_mtd)
-print(status_mtd)
-
 status_ytd = status_ytd.replace(0, np.nan)
 status_mtd = status_mtd.replace(0, np.nan)
-
-print(status_mtd)
 
 total_ytd = status_ytd.copy()
 total_mtd = status_mtd.copy()
@@ -152,9 +146,6 @@ status_ytd.loc['SUM'] = ytd_sum
 
 mtd_sum = status_mtd.sum(axis = 0).to_list()
 status_mtd.loc['SUM'] = mtd_sum
-
-total_ytd = status_ytd.fillna(0)
-total_mtd = status_mtd.fillna(0)
 
 total_ytd = round(total_ytd.values.sum(), 1)
 total_mtd = round(total_mtd.values.sum(), 1)

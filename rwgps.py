@@ -132,8 +132,8 @@ rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
 rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 
 # STATUS YTD, MTD
-status_ytd = rides_ytd - target_ytd
-status_mtd = rides_mtd - target_mtd
+status_ytd = rides_ytd.fillna(0) - target_ytd
+status_mtd = rides_mtd.fillna(0) - target_mtd
 
 print(rides_mtd)
 print(target_mtd)
@@ -141,6 +141,8 @@ print(status_mtd)
 
 status_ytd = status_ytd.replace(0, np.nan)
 status_mtd = status_mtd.replace(0, np.nan)
+
+print(status_mtd)
 
 total_ytd = status_ytd.copy()
 total_mtd = status_mtd.copy()

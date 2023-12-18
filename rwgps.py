@@ -149,7 +149,7 @@ fig = px.imshow(
     color_continuous_midpoint = 0,
     aspect = 'auto')
 
-fig.update_layout(coloraxis_showscale = False, font = dict(size = 18))
+fig.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
 fig.update_xaxes(side = 'top')
 fig.update_traces(textfont_size = 28)
 

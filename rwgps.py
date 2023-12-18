@@ -109,35 +109,40 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
-empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
-rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
+# empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
+#                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+#                        'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
+# rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
 rides_ytd = rides_ytd.groupby(['GEAR', 'NAME']).sum()
 rides_ytd = rides_ytd.unstack('NAME')
 rides_ytd = rides_ytd.droplevel(0, axis = 1)
 rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
 rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
-# rides_ytd = rides_ytd.fillna(0)
-# rides_ytd = rides_mtd.replace(0, np.nan)
+ytd_sum = rides_ytd.sum(axis = 0)
+
+print(ytd_sum)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
-empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
-rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
+# empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
+#                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+#                        'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
+# rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
 rides_mtd = rides_mtd.groupby(['GEAR', 'NAME']).sum()
 rides_mtd = rides_mtd.unstack('NAME')
 rides_mtd = rides_mtd.droplevel(0, axis = 1)
 rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
 rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
-# rides_mtd = rides_mtd.fillna(0)
-# rides_mtd = rides_mtd.replace(0, np.nan)
 
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd
 status_mtd = rides_mtd - target_mtd
+
+ytd_sum = status_ytd.sum(axis = 0).to_list()
+status_ytd.loc['SUM'] = ytd_sum
+
+mtd_sum = status_mtd.sum(axis = 0).to_list()
+status_mtd.loc['SUM'] = mtd_sum
 
 total_ytd = status_ytd.copy()
 total_mtd = status_mtd.copy()

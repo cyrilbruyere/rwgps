@@ -149,7 +149,9 @@ fig = px.imshow(
     color_continuous_midpoint = 0,
     aspect = 'auto')
 
-fig.update_layout(coloraxis_showscale = False)
+fig.update_layout(coloraxis_showscale = False,
+                  font = dict(size=18,
+                              color="white"))
 fig.update_xaxes(side = 'top')
 
 # Save image

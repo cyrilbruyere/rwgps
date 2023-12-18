@@ -118,9 +118,6 @@ rides_ytd = rides_ytd.unstack('NAME')
 rides_ytd = rides_ytd.droplevel(0, axis = 1)
 rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
 rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
-ytd_sum = rides_ytd.sum(axis = 0)
-
-print(ytd_sum)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
@@ -153,8 +150,8 @@ total_mtd = status_mtd.copy()
 total_ytd = status_ytd.fillna(0)
 total_mtd = status_mtd.fillna(0)
 
-total_ytd = round(total_ytd.values.sum(), 1)
-total_mtd = round(total_mtd.values.sum(), 1)
+total_ytd = round(total_ytd.values.sum(), 0)
+total_mtd = round(total_mtd.values.sum(), 0)
 
 # HEATMAPS YTD, MTD
 fig_ytd = px.imshow(status_ytd.values,

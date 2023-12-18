@@ -138,20 +138,20 @@ status_mtd = rides_mtd - target_mtd
 status_ytd = status_ytd.replace(0, np.nan)
 status_mtd = status_mtd.replace(0, np.nan)
 
+total_ytd = status_ytd.copy()
+total_mtd = status_mtd.copy()
+
 ytd_sum = status_ytd.sum(axis = 0).to_list()
 status_ytd.loc['SUM'] = ytd_sum
 
 mtd_sum = status_mtd.sum(axis = 0).to_list()
 status_mtd.loc['SUM'] = mtd_sum
 
-total_ytd = status_ytd.copy()
-total_mtd = status_mtd.copy()
-
 total_ytd = status_ytd.fillna(0)
 total_mtd = status_mtd.fillna(0)
 
-total_ytd = round(total_ytd.values.sum(), 0)
-total_mtd = round(total_mtd.values.sum(), 0)
+total_ytd = round(total_ytd.values.sum(), 1)
+total_mtd = round(total_mtd.values.sum(), 1)
 
 # HEATMAPS YTD, MTD
 fig_ytd = px.imshow(status_ytd.values,

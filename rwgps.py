@@ -136,8 +136,8 @@ rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # rides_mtd = rides_mtd.replace(0, np.nan)
 
 # STATUS YTD, MTD
-status_ytd = rides_ytd - target_ytd
-status_mtd = rides_mtd - target_mtd
+status_ytd = rides_ytd.fillna(0) - target_ytd
+status_mtd = rides_mtd.fillna(0) - target_mtd
 
 total_ytd = round(status_ytd.values.sum(), 1)
 total_mtd = round(status_mtd.values.sum(), 1)

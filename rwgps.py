@@ -117,7 +117,7 @@ rides_ytd = rides_ytd.unstack('NAME')
 rides_ytd = rides_ytd.droplevel(0, axis = 1)
 rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
 rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
-rides_ytd = rides_ytd.fillna(0)
+# rides_ytd = rides_ytd.fillna(0)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
@@ -149,9 +149,9 @@ fig = px.imshow(
     color_continuous_midpoint = 0,
     aspect = 'auto')
 
-fig.update_layout(coloraxis_showscale = False)
+fig.update_layout(coloraxis_showscale = False, font = dict(size = 18))
 fig.update_xaxes(side = 'top')
-fig.update_traces(textfont_size=20)
+fig.update_traces(textfont_size = 28)
 
 # Save image
 fig.write_image('ytd.png')

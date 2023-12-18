@@ -1,6 +1,7 @@
 # API access
 import requests
 # Cleaning
+import numpy as np
 import pandas as pd
 # # Graphics
 import plotly.express as px
@@ -118,6 +119,7 @@ rides_ytd = rides_ytd.droplevel(0, axis = 1)
 rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
 rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # rides_ytd = rides_ytd.fillna(0)
+rides_ytd = rides_mtd.replace(0, np.nan)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
@@ -131,6 +133,7 @@ rides_mtd = rides_mtd.droplevel(0, axis = 1)
 rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
 rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # rides_mtd = rides_mtd.fillna(0)
+rides_mtd = rides_mtd.replace(0, np.nan)
 
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd
@@ -140,48 +143,63 @@ total_ytd = round(status_ytd.values.sum(), 1)
 total_mtd = round(status_mtd.values.sum(), 1)
 
 # HEATMAPS YTD, MTD
-fig = px.imshow(
-    status_ytd.values,
-    x = status_ytd.columns,
-    y = status_ytd.index,
-    text_auto = '.1f',
-    color_continuous_scale = ['red', 'white', 'green'],
-    color_continuous_midpoint = 0,
-    aspect = 'auto')
+fig_ytd = px.imshow(status_ytd.values,
+                    x = status_ytd.columns,
+                    y = status_ytd.index,
+                    text_auto = '.1f',
+                    color_continuous_scale = ['red', 'white', 'green'],
+                    color_continuous_midpoint = 0,
+                    aspect = 'auto')
 
-fig.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
-fig.update_xaxes(side = 'top')
-fig.update_traces(textfont_size = 28)
+fig_ytd.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
+fig_ytd.update_xaxes(side = 'top')
+fig_ytd.update_traces(textfont_size = 28)
 
-# Save image
-fig.write_image('ytd.png')
+fig_ytd.write_image('ytd.png')
+
+fig_mtd = px.imshow(status_mtd.values,
+                    x = status_mtd.columns,
+                    y = status_mtd.index,
+                    text_auto = '.1f',
+                    color_continuous_scale = ['red', 'white', 'green'],
+                    color_continuous_midpoint = 0,
+                    aspect = 'auto')
+
+fig_mtd.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
+fig_mtd.update_xaxes(side = 'top')
+fig_mtd.update_traces(textfont_size = 28)
+
+fig_mtd.write_image('mtd.png')
+
 
 # ENVOI DE L'EMAIL
-# mail.HTMLBody = """
-#     Bonjour,<br><br>
-#     Ride status pour le mois en cours : <strong>{} h</strong><br><br>
-#     <img src='cid:MyId1'><br>
-#     <br>
-#     Ride status pour l'année en cours : <strong>{} h</strong><br><br>
-#     <img src='cid:MyId0'><br><br>
-#     gears :<br>{}<br>
-#     names :<br>{}<br>
-#     <br>
-# """.format(total_mtd, total_ytd, unique_gears, unique_names)
 
-# Image à envoyer
-with open('ytd.png', 'rb') as file:
-    # encode64 = base64.b64encode(file.read())
-    msgImage = MIMEImage(file.read())
-    msgImage.add_header('Content-ID', '<ytd>')
+# Images à envoyer
+with open('ytd.png', 'rb') as file_ytd:
+    msgImage_ytd = MIMEImage(file_ytd.read())
+    msgImage_ytd.add_header('Content-ID', '<ytd>')
+
+with open('mtd.png', 'rb') as file_mtd:
+    msgImage_mtd = MIMEImage(file_mtd.read())
+    msgImage_mtd.add_header('Content-ID', '<mtd>')
 
 # Texte à envoyer
-msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
+msgtext = MIMEText("""Bonjour,<br><br>
+                    Ride status pour le mois en cours : <strong>{} h</strong><br><br>
+                    <img src='cid:mtd'><br>
+                    <br>
+                    Ride status pour l'année en cours : <strong>{} h</strong><br><br>
+                    <img src='cid:ytd'><br><br>
+                    gears :<br>{}<br>
+                    names :<br>{}<br>
+                    <br>
+""".format(total_mtd, total_ytd, unique_gears, unique_names))
 
 msg = MIMEMultipart()
 msg['Subject'] = 'Ride status'
 msg.attach(msgtext)
-msg.attach(msgImage)
+msg.attach(msgImage_ytd)
+msg.attach(msgImage_mtd)
 
 port = 465
 smtp_server = 'smtp.gmail.com'

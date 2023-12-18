@@ -109,10 +109,10 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
-# empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-#                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-#                        'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
-# rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
+empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
+                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+                       'DUREE' : [0, 0, 0, 0, 0]})
+rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
 rides_ytd = rides_ytd.groupby(['GEAR', 'NAME']).sum()
 rides_ytd = rides_ytd.unstack('NAME')
 rides_ytd = rides_ytd.droplevel(0, axis = 1)
@@ -124,10 +124,10 @@ print(ytd_sum)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
-# empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-#                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-#                        'DUREE' : [np.nan, np.nan, np.nan, np.nan, np.nan]})
-# rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
+empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
+                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+                       'DUREE' : [0, 0, 0, 0, 0]})
+rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
 rides_mtd = rides_mtd.groupby(['GEAR', 'NAME']).sum()
 rides_mtd = rides_mtd.unstack('NAME')
 rides_mtd = rides_mtd.droplevel(0, axis = 1)
@@ -137,6 +137,9 @@ rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd
 status_mtd = rides_mtd - target_mtd
+
+status_ytd = status_ytd.replace(0, np.nan)
+status_mtd = status_mtd.replace(0, np.nan)
 
 ytd_sum = status_ytd.sum(axis = 0).to_list()
 status_ytd.loc['SUM'] = ytd_sum

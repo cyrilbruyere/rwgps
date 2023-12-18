@@ -119,7 +119,7 @@ rides_ytd = rides_ytd.droplevel(0, axis = 1)
 rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
 rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # rides_ytd = rides_ytd.fillna(0)
-rides_ytd = rides_mtd.replace(0, np.nan)
+# rides_ytd = rides_mtd.replace(0, np.nan)
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
@@ -133,7 +133,7 @@ rides_mtd = rides_mtd.droplevel(0, axis = 1)
 rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
 rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 # rides_mtd = rides_mtd.fillna(0)
-rides_mtd = rides_mtd.replace(0, np.nan)
+# rides_mtd = rides_mtd.replace(0, np.nan)
 
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd

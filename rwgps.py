@@ -130,7 +130,7 @@ rides_mtd = rides_mtd.unstack('NAME')
 rides_mtd = rides_mtd.droplevel(0, axis = 1)
 rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
 rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
-rides_mtd = rides_mtd.fillna(0)
+# rides_mtd = rides_mtd.fillna(0)
 
 # STATUS YTD, MTD
 status_ytd = rides_ytd - target_ytd

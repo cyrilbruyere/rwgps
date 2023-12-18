@@ -184,6 +184,7 @@ with open('mtd.png', 'rb') as file_mtd:
     msgImage_mtd.add_header('Content-ID', '<mtd>')
 
 # Texte à envoyer
+# msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msgtext = MIMEText("""Bonjour,<br><br>
                     Ride status pour le mois en cours : <strong>{} h</strong><br><br>
                     <img src='cid:mtd'><br>
@@ -193,7 +194,7 @@ msgtext = MIMEText("""Bonjour,<br><br>
                     gears :<br>{}<br>
                     names :<br>{}<br>
                     <br>
-""".format(total_mtd, total_ytd, unique_gears, unique_names))
+""".format(total_mtd, total_ytd, unique_gears, unique_names), 'html')
 
 msg = MIMEMultipart()
 msg['Subject'] = 'Ride status'

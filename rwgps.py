@@ -195,15 +195,17 @@ with open('mtd.png', 'rb') as file_mtd:
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
 Bonjour,<br><br>
+Moving time pour le mois en cours : <strong>{} h</strong><br>
 Ride status pour le mois en cours : <strong>{} h</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
+Moving time pour l'année en cours : <strong>{} h</strong><br>
 Ride status pour l'année en cours : <strong>{} h</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(total_mtd, total_ytd, unique_gears, unique_names)
+""".format(rides_mtd['DUREE'].sum(), rides_ytd['DUREE'].sum(), total_mtd, total_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

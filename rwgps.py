@@ -109,6 +109,7 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
+duree_ytd = rides_ytd['DUREE'].sum()
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -121,6 +122,7 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
+duree_mtd = rides_mtd['DUREE'].sum()
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -205,7 +207,7 @@ Ride status pour l'année en cours : <strong>{} h</strong><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(rides_mtd['DUREE'].sum(), rides_ytd['DUREE'].sum(), total_mtd, total_ytd, unique_gears, unique_names)
+""".format(duree_mtd, duree_ytd, total_mtd, total_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

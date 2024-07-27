@@ -109,7 +109,8 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
-duree_ytd = round(rides_ytd['DUREE'].sum(), 1)
+days_ytd = rides_ytd['DUREE'].sum() // 24
+hours_ytd = round(rides_ytd['DUREE'].sum() % 24, 0)
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -122,7 +123,8 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
-duree_mtd = round(rides_mtd['DUREE'].sum(), 1)
+days_mtd = rides_mtd['DUREE'].sum() // 24
+hours_mtd = round(rides_mtd['DUREE'].sum() % 24, 0)
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -197,17 +199,17 @@ with open('mtd.png', 'rb') as file_mtd:
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
 Bonjour,<br><br>
-Moving time pour le mois en cours : <strong>{} h</strong><br>
+Moving time pour le mois en cours : <strong>{} j {} h</strong><br>
 Ride status pour le mois en cours : <strong>{} h</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
-Moving time pour l'année en cours : <strong>{} h</strong><br>
+Moving time pour l'année en cours : <strong>{} j {} h</strong><br>
 Ride status pour l'année en cours : <strong>{} h</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(duree_mtd, total_mtd, duree_ytd, total_ytd, unique_gears, unique_names)
+""".format(days_mtd, hours_mtd, total_mtd, days_ytd, hours_ytd, total_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

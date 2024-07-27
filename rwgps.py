@@ -109,8 +109,8 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
-days_ytd = rides_ytd['DUREE'].sum() // 24
-hours_ytd = round(rides_ytd['DUREE'].sum() % 24, 0)
+days_ytd = int(rides_ytd['DUREE'].sum() // 24)
+hours_ytd = int(rides_ytd['DUREE'].sum() % 24)
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -123,8 +123,8 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 
 # SUMMARY MTD
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
-days_mtd = rides_mtd['DUREE'].sum() // 24
-hours_mtd = round(rides_mtd['DUREE'].sum() % 24, 0)
+days_mtd = int(rides_mtd['DUREE'].sum() // 24)
+hours_mtd = int(rides_mtd['DUREE'].sum() % 24)
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})

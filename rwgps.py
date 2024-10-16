@@ -156,7 +156,7 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
 days_mtd = int(rides_mtd['DUREE'].sum() // 24)
 hours_mtd = int(rides_mtd['DUREE'].sum() % 24)
-climb_mtd = int(target_elevation - rides_mtd['ELEVATION'].sum())
+climb_mtd = int(target_elevation - trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]['ELEVATION'].sum())
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})

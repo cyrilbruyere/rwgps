@@ -156,7 +156,7 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
 days_mtd = int(rides_mtd['DUREE'].sum() // 24)
 hours_mtd = int(rides_mtd['DUREE'].sum() % 24)
-climb_mtd = int(target_elevation - trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]['ELEVATION'].sum())
+climb_mtd = int(trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]['ELEVATION'].sum() - target_elevation)
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -269,13 +269,13 @@ msg = """
 Bonjour,<br><br>
 Moving time pour le mois en cours : <strong>{} j {} h</strong><br>
 Ride status pour le mois en cours : <strong>{} h</strong><br>
-Rest status pour le mois en cours : <strong>{} h</strong><br>
+Repos moyen pour le mois en cours : <strong>{} j</strong><br>
 {} status pour le mois en cours : <strong>{} m</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
 Moving time pour l'année en cours : <strong>{} j {} h</strong><br>
 Ride status pour l'année en cours : <strong>{} h</strong><br>
-Rest status pour l'année en cours : <strong>{} h</strong><br><br>
+Repos moyen pour l'année en cours : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>

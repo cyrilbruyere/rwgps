@@ -267,20 +267,20 @@ with open('mtd.png', 'rb') as file_mtd:
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
 Bonjour,<br><br>
-Moving time pour le mois en cours : <strong>{} j {} h</strong><br>
 Ride status pour le mois en cours : <strong>{} h</strong><br>
+{} climb pour le mois en cours : <strong>{} m</strong><br>
 Repos moyen pour le mois en cours : <strong>{} j</strong><br>
-{} status pour le mois en cours : <strong>{} m</strong><br><br>
+Moving time pour le mois en cours : <strong>{} j {} h</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
-Moving time pour l'année en cours : <strong>{} j {} h</strong><br>
 Ride status pour l'année en cours : <strong>{} h</strong><br>
-Repos moyen pour l'année en cours : <strong>{} j</strong><br><br>
+Repos moyen pour l'année en cours : <strong>{} j</strong><br>
+Moving time pour l'année en cours : <strong>{} j {} h</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(days_mtd, hours_mtd, total_mtd, rest_mtd, target_climb, climb_mtd, days_ytd, hours_ytd, total_ytd, rest_ytd, unique_gears, unique_names)
+""".format(total_mtd, target_climb, climb_mtd, rest_mtd, days_mtd, hours_mtd, total_ytd, rest_ytd, days_ytd, hours_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

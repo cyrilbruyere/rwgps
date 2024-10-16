@@ -220,12 +220,12 @@ fig_mtd.write_image('mtd.png')
 ###############
 
 df = trips.copy()
-df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / pow(22.5, 1/3)
+df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df.loc[df['GEAR'] == 'HT', 'IF'] = 0.75
 df.loc[df['RATIO'] == 0, 'IF'] = 0.75
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
 df['ATL'] = df['TSS'] * (1 - math.exp(-1/7))
-df['ATL'] = df['TSS'] * (1 - math.exp(-1/42))
+df['CTL'] = df['TSS'] * (1 - math.exp(-1/42))
 df = df.reset_index()
 for index, row in df.iterrows():
     if index != 0:

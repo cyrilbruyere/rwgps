@@ -245,8 +245,9 @@ pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='
 pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
+pmc['DATE'] = pmc['DATE'].dt.strftime('%d/%M/%Y')
 print(pmc.head(5))
-print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].info())
+print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].head(5))
 
 pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 

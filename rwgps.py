@@ -220,7 +220,7 @@ fig_mtd.write_image('mtd.png')
 ###############
 
 df = trips.copy()
-df['IF'] = df['DUREE'] * df['VITESSE'] / 27.5 * np.pow(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
+df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.pow(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df.loc[df['GEAR'] == 'HT', 'IF'] = 0.75
 df.loc[df['RATIO'] == 0, 'IF'] = 0.75
 df['TSS'] = df['DUREE'] * np.pow(df ['IF'], 2) * 100

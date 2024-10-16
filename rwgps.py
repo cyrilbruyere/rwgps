@@ -135,8 +135,8 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 day_of_year = dt.date.today().timetuple().tm_yday
 day_of_month = dt.date.today().day
 
-rest_ytd = round(rides_ytd['DATE'].nunique() / day_of_year, 1)
-rest_mtd = round(rides_mtd['DATE'].nunique() / day_of_month, 1)
+rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
+rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
@@ -245,7 +245,7 @@ pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='
 pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
-pmc['DATE'] = pmc['DATE'].dt.strftime('%d/%M/%Y')
+pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 print(pmc.head(5))
 print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].head(5))
 
@@ -280,7 +280,7 @@ Rest status pour l'année en cours : <strong>{} h</strong><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(days_mtd, hours_mtd, total_mtd, rest_mtd, target_climb, target_elevation, days_ytd, hours_ytd, total_ytd, rest_ytd, unique_gears, unique_names)
+""".format(days_mtd, hours_mtd, total_mtd, rest_mtd, target_climb, climb_mtd, days_ytd, hours_ytd, total_ytd, rest_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

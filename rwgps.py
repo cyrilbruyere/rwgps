@@ -267,15 +267,15 @@ with open('mtd.png', 'rb') as file_mtd:
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
 Bonjour,<br><br>
-Ride status pour le mois en cours : <strong>{} h</strong><br>
-{} climb pour le mois en cours : <strong>{} m</strong><br>
-Repos moyen pour le mois en cours : <strong>{} j</strong><br>
-Moving time pour le mois en cours : <strong>{} j {} h</strong><br><br>
+Ride status du mois : <strong>{} h</strong><br>
+{} climb du mois : <strong>{} m</strong><br>
+Repos moyen du le mois : <strong>{} j</strong><br>
+Moving time du le mois : <strong>{} j {} h</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
-Ride status pour l'année en cours : <strong>{} h</strong><br>
-Repos moyen pour l'année en cours : <strong>{} j</strong><br>
-Moving time pour l'année en cours : <strong>{} j {} h</strong><br><br>
+Ride status de l'année : <strong>{} h</strong><br>
+Repos moyen de l'année : <strong>{} j</strong><br>
+Moving time de l'année : <strong>{} j {} h</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>

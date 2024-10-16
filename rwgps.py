@@ -242,7 +242,7 @@ df['TSB-'] = np.min(df['CTL'] - df['ATL'], 0)
 sdate = dt.date(2014, 1, 1)   # start date
 edate = dt.date.today()   # end date
 pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='d'))
-pmc = df.reset_index()
+pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
 pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')

@@ -1,17 +1,22 @@
 # API access
 import requests
-# Cleaning
+# DATA transform
 import numpy as np
 import pandas as pd
 # # Graphics
 import plotly.express as px
 # Built in
-import datetime as dt
+import datetime as dt, date, timedelta
+import math
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 import os
+
+###################
+###   SETTING   ###
+###################
 
 api_key = os.environ.get('api_key')
 api_token = os.environ.get('api_token')
@@ -24,6 +29,10 @@ params = {"apikey": api_key,
 
 url_user = os.environ.get('url_user')
 url_trips = os.environ.get('url_trips')
+
+#################
+###   GEARS   ###
+#################
 
 response = requests.get(url_user, params = params, verify = False)
 data = response.json()
@@ -39,6 +48,9 @@ for v in user['gear']:
 
 gears = pd.DataFrame(gears, columns = ['ID_GEAR', 'GEAR'])
 
+#################
+###   TRIPS   ###
+#################
 
 response = requests.get(url_trips, params = params, verify = False)
 data = response.json()
@@ -82,6 +94,10 @@ trips = trips[['DATE', 'NAME', 'GEAR', 'DISTANCE', 'ELEVATION', 'DUREE', 'SPEED'
 
 trips = trips[trips['NAME'] !=  'NOE']
 
+####################
+###   HEATMAPS   ###
+####################
+
 # YTD, MTD
 ytd = dt.date.today().year
 mtd = dt.date.today().month
@@ -97,15 +113,30 @@ summer = pd.DataFrame([[30, 0, 0, 0, 0], [0, 0, 0, 0, 0], [20, 30, 70, 0, 0], [0
 unique_gears = trips['GEAR'].unique()
 unique_names = trips['NAME'].unique()
 
+# TARGET climbing for strength
+everest = 8849 # valid for summer, eg E
+montblanc = 4809 # valid for winter, eg H
+
 # TARGE YTD, MTD
 target_ytd = min(3, mtd) * 1/6 * winter + max(0, mtd - 9) * 1/6 * winter + max(0, mtd - 3) * 1/6 * summer - max(0, mtd - 9) * 1/6 * summer
 target_mtd = 1/6 * winter
+target_climb = 'Mont Blanc'
+target_elevation = montblanc
 if mtd in [4, 5, 6, 7, 8, 9]:
     target_mtd = 1/6 * summer
+    target_climb = 'Everest'
+    target_elevation = everest
 
 # RIDES YTD, MTD
-rides_ytd = trips[trips['YYYY'] == ytd]
-rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]
+rides_ytd = trips[trips['YYYY'] == ytd].copy()
+rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
+
+# AVERAGE REST
+day_of_year = dt.date.today().timetuple().tm_yday
+day_of_month = dt.date.today().day
+
+rest_ytd = round(rides_ytd['DATE'].nunique() / day_of_year, 1)
+rest_mtd = round(rides_mtd['DATE'].nunique() / day_of_month, 1)
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
@@ -125,6 +156,7 @@ rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
 rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
 days_mtd = int(rides_mtd['DUREE'].sum() // 24)
 hours_mtd = int(rides_mtd['DUREE'].sum() % 24)
+climb_mtd = int(target_elevation - rides_mtd['ELEVATION'].sum())
 empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                        'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                        'DUREE' : [0, 0, 0, 0, 0]})
@@ -183,6 +215,38 @@ fig_mtd.update_traces(textfont_size = 28)
 
 fig_mtd.write_image('mtd.png')
 
+###############
+###   PMC   ###
+###############
+
+df = trips.copy()
+df['IF'] = df['DUREE'] * df['VITESSE'] / 27.5 * np.pow(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
+df.loc[df['GEAR'] == 'HT', 'IF'] = 0.75
+df.loc[df['RATIO'] == 0, 'IF'] = 0.75
+df['TSS'] = df['DUREE'] * np.pow(df ['IF'], 2) * 100
+df['ATL'] = df['TSS'] * (1 - math.exp(-1/7))
+df['ATL'] = df['TSS'] * (1 - math.exp(-1/42))
+df = df.reset_index()
+for index, row in df.iterrows():
+    if index != 0:
+        df.at[index, 'ATL'] = df.at[index, 'ATL'] + df.at[index - 1, 'ATL'] * math.exp(-1/7)
+        df.at[index, 'CTL'] = df.at[index, 'CTL'] + df.at[index - 1, 'CTL'] * math.exp(-1/42)
+    else:
+        df.at[index, 'ATL'] = df.at[index, 'ATL']
+        df.at[index, 'CTL'] = df.at[index, 'CTL']
+
+df['TSB+'] = np.max(df['CTL'] - df['ATL'], 0)
+df['TSB-'] = np.min(df['CTL'] - df['ATL'], 0)
+
+# Toutes les dates doivent être prises en compte
+sdate = date(2014, 1, 1)   # start date
+edate = dt.date.today()   # end date
+pmc = pd.DataFrame(index = pd.date_range(sdate,edate-timedelta(days=1),freq='d'))
+pmc = df.reset_index()
+pmc.columns = ['DATE']
+
+pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+
 
 # ENVOI DE L'EMAIL
 
@@ -200,16 +264,19 @@ with open('mtd.png', 'rb') as file_mtd:
 msg = """
 Bonjour,<br><br>
 Moving time pour le mois en cours : <strong>{} j {} h</strong><br>
-Ride status pour le mois en cours : <strong>{} h</strong><br><br>
+Ride status pour le mois en cours : <strong>{} h</strong><br>
+Rest status pour le mois en cours : <strong>{} h</strong><br>
+{} status pour le mois en cours : <strong>{} m</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
 Moving time pour l'année en cours : <strong>{} j {} h</strong><br>
-Ride status pour l'année en cours : <strong>{} h</strong><br><br>
+Ride status pour l'année en cours : <strong>{} h</strong><br>
+Rest status pour l'année en cours : <strong>{} h</strong><br><br>
 <img src='cid:ytd'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>
-""".format(days_mtd, hours_mtd, total_mtd, days_ytd, hours_ytd, total_ytd, unique_gears, unique_names)
+""".format(days_mtd, hours_mtd, total_mtd, rest_mtd, target_climb, target_elevation, days_ytd, hours_ytd, total_ytd, rest_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

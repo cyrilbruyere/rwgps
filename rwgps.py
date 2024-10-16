@@ -6,7 +6,7 @@ import pandas as pd
 # # Graphics
 import plotly.express as px
 # Built in
-import datetime as dt, date, timedelta
+import datetime as dt
 import math
 import smtplib, ssl
 from email.mime.text import MIMEText
@@ -239,9 +239,9 @@ df['TSB+'] = np.max(df['CTL'] - df['ATL'], 0)
 df['TSB-'] = np.min(df['CTL'] - df['ATL'], 0)
 
 # Toutes les dates doivent être prises en compte
-sdate = date(2014, 1, 1)   # start date
+sdate = dt.date(2014, 1, 1)   # start date
 edate = dt.date.today()   # end date
-pmc = pd.DataFrame(index = pd.date_range(sdate,edate-timedelta(days=1),freq='d'))
+pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='d'))
 pmc = df.reset_index()
 pmc.columns = ['DATE']
 

@@ -224,6 +224,9 @@ df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
 df.loc[(df['GEAR'] == 'HT') & (df['DUREE'].isnull()), 'DUREE'] = 0.75
 df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'].isnull()), 'DISTANCE'] = 21
 df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'].isnull()), 'ELEVATION'] = 200
+
+print(df[df['GEAR']=='HT'].head(20))
+
 df = df.drop(['GEAR'], axis = 1)
 df = df.groupby(['DATE']).sum().reset_index()
 df['SPEED'] = df['DISTANCE'] / df['DUREE']
@@ -259,7 +262,7 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], 0)
 pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], 0)
 
-print(pmc[pmc['TSS']>0].head(20))
+print(pmc[pmc['TSS']>0]['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-'].head(20))
 
 # Création du graphique
 graf = go.Figure()

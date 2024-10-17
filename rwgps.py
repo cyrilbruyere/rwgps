@@ -274,8 +274,8 @@ pmc = pmc[pmc['DATE'] > rolling_3m]
 graf = go.Figure()
 graf.update_layout(title = 'PMC')
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', name = 'TSB-'))
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', name = 'TSB+'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy'name = 'TSB-'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
 
 graf.write_image('pmc.png')
 

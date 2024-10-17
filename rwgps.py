@@ -221,9 +221,9 @@ fig_mtd.write_image('mtd.png')
 ###############
 
 df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
-df[df['GEAR'] == 'HT']['DUREE'] = df[df['GEAR'] == 'HT']['DUREE'].fillna(0.75)
-df[df['GEAR'] == 'HT']['DISTANCE'] = df[df['GEAR'] == 'HT']['DISTANCE'].fillna(21)
-df[df['GEAR'] == 'HT']['ELEVATION'] = df[df['GEAR'] == 'HT']['ELEVATION'].fillna(200)
+df.loc[(df['GEAR'] == 'HT') & (df['DUREE'].isnull()), 'DUREE'] = 0.75
+df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'].isnull()), 'DISTANCE'] = 21
+df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'].isnull()), 'ELEVATION'] = 200
 df = df.drop(['GEAR'], axis = 1)
 df = df.groupby(['DATE']).sum().reset_index()
 df['SPEED'] = df['DISTANCE'] / df['DUREE']
@@ -242,6 +242,7 @@ pmc.columns = ['DATE']
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
 pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+pmc = pmc.fillna(0)
 
 pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
 pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))

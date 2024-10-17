@@ -227,7 +227,7 @@ df.loc[(df['GEAR'] == 'HT') & (df['DUREE'] == 0), 'DUREE'] = 0.75
 df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'] == 0), 'DISTANCE'] = 21
 df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 
-print(df[df['GEAR']=='HT'].head(20))
+print(df[df['GEAR'] == 'HT'].head(10))
 
 df = df.drop(['GEAR'], axis = 1)
 df = df.groupby(['DATE']).sum().reset_index()
@@ -264,7 +264,7 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], 0)
 pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], 0)
 
-print(pmc[pmc['TSS']>0]['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-'].head(20))
+print(pmc[pmc['TSS']>0][['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(10))
 
 # Création du graphique
 graf = go.Figure()

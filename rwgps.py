@@ -267,7 +267,7 @@ pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 print(pmc[['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
 
 rolling_3m = edate - relativedelta(months = 3)
-rolling_3m = str(rolling_3m.annee) + '-' + str(rolling_3m.mois).zfill(2) + '-' + str(rolling_3m.day).zfill(2)
+rolling_3m = str(rolling_3m.year) + '-' + str(rolling_3m.month).zfill(2) + '-' + str(rolling_3m.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_3m]
 
 # Création du graphique

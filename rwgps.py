@@ -230,7 +230,7 @@ df['SPEED'] = df['DISTANCE'] / df['DUREE']
 df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
-df['DATE'] = df['DATE'].dt.strftime('%Y-%m-%d')
+df['DATE'] = df['DATE'].astype(str)
 
 # Toutes les dates doivent être prises en compte
 sdate = dt.date(2014, 1, 1)   # start date

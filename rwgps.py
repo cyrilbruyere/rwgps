@@ -251,8 +251,8 @@ pmc = pmc.fillna(0)
 
 pmc['ATL'] = 0
 pmc['CTL'] = 0
-pmc = pmc.reset_index()
 pmc = pmc.sort_values(['DATE'])
+pmc = pmc.reset_index()
 for index, row in pmc.iterrows():
     if index != 0:
         pmc.at[index, 'ATL'] = pmc['TSS'] * (1 - math.exp(-1/7)) + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)

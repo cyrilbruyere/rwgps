@@ -276,8 +276,8 @@ graf.write_image('pmc.png')
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:
-    msgImage = MIMEImage(file.read())
-    msgImage.add_header('Content-ID', '<pmc>')
+    msgImage_pmc = MIMEImage(file.read())
+    msgImage_pmc.add_header('Content-ID', '<pmc>')
 
 # ENVOI DE L'EMAIL
 
@@ -317,6 +317,7 @@ msg['Subject'] = 'Ride status'
 msg.attach(msgtext)
 msg.attach(msgImage_ytd)
 msg.attach(msgImage_mtd)
+msg.attach(msgImage_pmc)
 
 port = 465
 smtp_server = 'smtp.gmail.com'

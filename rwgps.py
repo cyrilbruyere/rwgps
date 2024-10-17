@@ -259,14 +259,14 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], 0)
 pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], 0)
 
-print(pmc.head(20))
+print(pmc[pmc['TSS']>0].head(20))
 
 # Création du graphique
 graf = go.Figure()
 graf.update_layout(title = 'PMC')
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['CTL'].values, mode = 'lines', name = 'CTL'))
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB-'].values, mode = 'lines', name = 'TSB-'))
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB+'].values, mode = 'lines', name = 'TSB+'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = dpmcf['TSB-'].values, mode = 'lines', name = 'TSB-'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', name = 'TSB+'))
 
 graf.write_image('pmc.png')
 

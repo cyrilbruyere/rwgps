@@ -258,8 +258,8 @@ for index, row in pmc.iterrows():
         pmc.at[index, 'ATL'] = pmc['TSS'] * (1 - math.exp(-1/7)) + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)
         pmc.at[index, 'CTL'] = pmc['TSS'] * (1 - math.exp(-1/42)) + pmc.at[index - 1, 'CTL'] * math.exp(-1/42)
     else:
-        pmc.at[index, 'ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
-        pmc.at[index, 'CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
+        pmc.at[index, 'ATL'] = pmc.at[index, 'TSS'] * (1 - math.exp(-1/7))
+        pmc.at[index, 'CTL'] = pmc.at[index, 'TSS'] * (1 - math.exp(-1/42))
 
 pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)

@@ -249,8 +249,8 @@ pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 pmc = pmc.fillna(0)
 
-# pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
-# pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
+pmc['ATL'] = 0
+pmc['CTL'] = 0
 pmc = pmc.reset_index()
 pmc = pmc.sort_values(['DATE'])
 for index, row in pmc.iterrows():

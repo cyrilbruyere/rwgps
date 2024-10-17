@@ -8,6 +8,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 # Built in
 import datetime as dt
+from dateutil.relativedelta import relativedelta
 import math
 import smtplib, ssl
 from email.mime.text import MIMEText
@@ -264,6 +265,10 @@ pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
 print(pmc[['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
+
+pmc['DATE'] = pd.to_datetime(pmc['DATE'], yearfirst = True)
+rolling_3m = edate - relativedelta(months = 3)
+pmc = pmc[pmc['DATE'] > rolling_3m]
 
 # Création du graphique
 graf = go.Figure()

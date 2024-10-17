@@ -260,8 +260,8 @@ for index, row in pmc.iterrows():
         pmc.at[index, 'ATL'] = pmc.at[index, 'ATL']
         pmc.at[index, 'CTL'] = pmc.at[index, 'CTL']
 
-pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], axis = 1)
-pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], axis = 1)
+pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
+pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
 print(pmc[['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
 

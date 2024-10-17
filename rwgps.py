@@ -227,10 +227,9 @@ df.loc[(df['GEAR'] == 'HT') & (df['DUREE'] == 0), 'DUREE'] = 0.75
 df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'] == 0), 'DISTANCE'] = 21
 df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 
-print(df[df['GEAR'] == 'HT'].head(10))
-
 df = df.drop(['GEAR'], axis = 1)
 df = df.groupby(['DATE']).sum().reset_index()
+
 df['SPEED'] = df['DISTANCE'] / df['DUREE']
 df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
@@ -261,10 +260,10 @@ for index, row in pmc.iterrows():
         pmc.at[index, 'ATL'] = pmc.at[index, 'ATL']
         pmc.at[index, 'CTL'] = pmc.at[index, 'CTL']
 
-pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'])
-pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'])
+pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], axis = 1)
+pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], axis = 1)
 
-print(pmc[pmc['TSS']>0][['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(10))
+print(pmc[['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
 
 # Création du graphique
 graf = go.Figure()

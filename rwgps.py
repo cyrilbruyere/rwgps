@@ -249,22 +249,22 @@ pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 pmc = pmc.fillna(0)
 
-pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
-pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
+# pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
+# pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
 pmc = pmc.reset_index()
 pmc = pmc.sort_values(['DATE'])
 for index, row in pmc.iterrows():
     if index != 0:
-        pmc.at[index, 'ATL'] = pmc.at[index, 'ATL'] + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)
-        pmc.at[index, 'CTL'] = pmc.at[index, 'CTL'] + pmc.at[index - 1, 'CTL'] * math.exp(-1/42)
+        pmc.at[index, 'ATL'] = pmc['TSS'] * (1 - math.exp(-1/7)) + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)
+        pmc.at[index, 'CTL'] = pmc['TSS'] * (1 - math.exp(-1/42)) + pmc.at[index - 1, 'CTL'] * math.exp(-1/42)
     else:
-        pmc.at[index, 'ATL'] = pmc.at[index, 'ATL']
-        pmc.at[index, 'CTL'] = pmc.at[index, 'CTL']
+        pmc.at[index, 'ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
+        pmc.at[index, 'CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
 
 pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
-print(pmc[['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
+print(pmc[['DATE', 'TSS', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
 
 rolling_3m = edate - relativedelta(months = 3)
 rolling_3m = str(rolling_3m.year) + '-' + str(rolling_3m.month).zfill(2) + '-' + str(rolling_3m.day).zfill(2)

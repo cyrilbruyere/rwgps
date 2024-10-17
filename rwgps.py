@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 # # Graphics
 import plotly.express as px
+import plotly.graph_objects as go
 # Built in
 import datetime as dt
 import math
@@ -251,6 +252,22 @@ print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].head(5))
 
 pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 
+print(pmc.head(20))
+
+# Création du graphique
+graf = go.Figure()
+graf.update_layout(title = 'PMC')
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['CTL'].values, line_shape = 'hv', name = 'CTL'))
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB-'].values, line_shape = 'hv', name = 'TSB-'))
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB+'].values, line_shape = 'hv', name = 'TSB+'))
+
+graf.write_image('pmc.png')
+
+# Images à envoyer
+with open('pmc.png', 'rb') as file:
+    msgImage = MIMEImage(file.read())
+    msgImage.add_header('Content-ID', '<pmc>')
+
 
 # ENVOI DE L'EMAIL
 
@@ -277,6 +294,7 @@ Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br>
 Moving time de l'année : <strong>{} j {} h</strong><br><br>
 <img src='cid:ytd'><br><br>
+<img src='cid:pmc'><br><br>
 gears :<br>{}<br>
 names :<br>{}<br>
 <br>

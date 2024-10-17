@@ -230,20 +230,7 @@ df['SPEED'] = df['DISTANCE'] / df['DUREE']
 df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
-df['ATL'] = df['TSS'] * (1 - math.exp(-1/7))
-df['CTL'] = df['TSS'] * (1 - math.exp(-1/42))
-df = df.reset_index()
-df = df.sort_values(['DATE'])
-for index, row in df.iterrows():
-    if index != 0:
-        df.at[index, 'ATL'] = df.at[index, 'ATL'] + df.at[index - 1, 'ATL'] * math.exp(-1/7)
-        df.at[index, 'CTL'] = df.at[index, 'CTL'] + df.at[index - 1, 'CTL'] * math.exp(-1/42)
-    else:
-        df.at[index, 'ATL'] = df.at[index, 'ATL']
-        df.at[index, 'CTL'] = df.at[index, 'CTL']
-
-df['TSB+'] = np.max(df['CTL'] - df['ATL'], 0)
-df['TSB-'] = np.min(df['CTL'] - df['ATL'], 0)
+df['DATE'] = df['DATE'].dt.strftime('%Y-%m-%d')
 
 # Toutes les dates doivent être prises en compte
 sdate = dt.date(2014, 1, 1)   # start date
@@ -257,6 +244,21 @@ print(pmc.head(5))
 print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].head(5))
 
 pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+
+pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
+pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))
+pmc = pmc.reset_index()
+pmc = pmc.sort_values(['DATE'])
+for index, row in pmc.iterrows():
+    if index != 0:
+        pmc.at[index, 'ATL'] = pmc.at[index, 'ATL'] + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)
+        pmc.at[index, 'CTL'] = pmc.at[index, 'CTL'] + pmc.at[index - 1, 'CTL'] * math.exp(-1/42)
+    else:
+        pmc.at[index, 'ATL'] = pmc.at[index, 'ATL']
+        pmc.at[index, 'CTL'] = pmc.at[index, 'CTL']
+
+pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], 0)
+pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], 0)
 
 print(pmc.head(20))
 

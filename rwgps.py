@@ -221,9 +221,11 @@ fig_mtd.write_image('mtd.png')
 ###############
 
 df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
-df.loc[(df['GEAR'] == 'HT') & (df['DUREE'].isnull()), 'DUREE'] = 0.75
-df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'].isnull()), 'DISTANCE'] = 21
-df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'].isnull()), 'ELEVATION'] = 200
+df = df.sort_values(['DATE'])
+
+df.loc[(df['GEAR'] == 'HT') & (df['DUREE'] == 0), 'DUREE'] = 0.75
+df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'] == 0), 'DISTANCE'] = 21
+df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 
 print(df[df['GEAR']=='HT'].head(20))
 

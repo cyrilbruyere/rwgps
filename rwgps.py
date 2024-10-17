@@ -220,14 +220,20 @@ fig_mtd.write_image('mtd.png')
 ###   PMC   ###
 ###############
 
-df = trips.copy()
+df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
+df[df['GEAR'] == 'HT']['DUREE'] = df[df['GEAR'] == 'HT']['DUREE'].fillna(0.75)
+df[df['GEAR'] == 'HT']['DISTANCE'] = df[df['GEAR'] == 'HT']['DISTANCE'].fillna(21)
+df[df['GEAR'] == 'HT']['ELEVATION'] = df[df['GEAR'] == 'HT']['ELEVATION'].fillna(200)
+df = df.drop(['GEAR'], axis = 1)
+df = df.groupby(['DATE']).sum().reset_index()
+df['SPEED'] = df['DISTANCE'] / df['DUREE']
+df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 df['IF'] = df['DUREE'] * df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
-df.loc[df['GEAR'] == 'HT', 'IF'] = 0.75
-df.loc[df['RATIO'] == 0, 'IF'] = 0.75
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
 df['ATL'] = df['TSS'] * (1 - math.exp(-1/7))
 df['CTL'] = df['TSS'] * (1 - math.exp(-1/42))
 df = df.reset_index()
+df = df.sor_values(['DATE'])
 for index, row in df.iterrows():
     if index != 0:
         df.at[index, 'ATL'] = df.at[index, 'ATL'] + df.at[index - 1, 'ATL'] * math.exp(-1/7)
@@ -257,9 +263,9 @@ print(pmc.head(20))
 # Création du graphique
 graf = go.Figure()
 graf.update_layout(title = 'PMC')
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['CTL'].values, line_shape = 'hv', name = 'CTL'))
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB-'].values, line_shape = 'hv', name = 'TSB-'))
-graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB+'].values, line_shape = 'hv', name = 'TSB+'))
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['CTL'].values, mode = 'lines', name = 'CTL'))
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB-'].values, mode = 'lines', name = 'TSB-'))
+graf.add_trace(go.Scatter(x = df['DATE'], y = df['TSB+'].values, mode = 'lines', name = 'TSB+'))
 
 graf.write_image('pmc.png')
 
@@ -267,7 +273,6 @@ graf.write_image('pmc.png')
 with open('pmc.png', 'rb') as file:
     msgImage = MIMEImage(file.read())
     msgImage.add_header('Content-ID', '<pmc>')
-
 
 # ENVOI DE L'EMAIL
 

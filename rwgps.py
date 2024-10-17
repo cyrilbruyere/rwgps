@@ -261,8 +261,8 @@ for index, row in pmc.iterrows():
         pmc.at[index, 'ATL'] = pmc.at[index, 'ATL']
         pmc.at[index, 'CTL'] = pmc.at[index, 'CTL']
 
-pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'], 0)
-pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'], 0)
+pmc['TSB+'] = np.max(pmc['CTL'] - pmc['ATL'])
+pmc['TSB-'] = np.min(pmc['CTL'] - pmc['ATL'])
 
 print(pmc[pmc['TSS']>0][['DATE', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(10))
 

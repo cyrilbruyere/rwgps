@@ -233,7 +233,7 @@ df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
 df['ATL'] = df['TSS'] * (1 - math.exp(-1/7))
 df['CTL'] = df['TSS'] * (1 - math.exp(-1/42))
 df = df.reset_index()
-df = df.sor_values(['DATE'])
+df = df.sort_values(['DATE'])
 for index, row in df.iterrows():
     if index != 0:
         df.at[index, 'ATL'] = df.at[index, 'ATL'] + df.at[index - 1, 'ATL'] * math.exp(-1/7)

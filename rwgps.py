@@ -240,10 +240,8 @@ pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
-print(pmc.head(5))
-print(df[['DATE', 'CTL', 'TSB+', 'TSB-']].head(5))
 
-pmc = pd.merge(pmc, df[['DATE', 'CTL', 'TSB+', 'TSB-']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 
 pmc['ATL'] = pmc['TSS'] * (1 - math.exp(-1/7))
 pmc['CTL'] = pmc['TSS'] * (1 - math.exp(-1/42))

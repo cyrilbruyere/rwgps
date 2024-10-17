@@ -265,7 +265,7 @@ print(pmc[pmc['TSS']>0].head(20))
 graf = go.Figure()
 graf.update_layout(title = 'PMC')
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = dpmcf['TSB-'].values, mode = 'lines', name = 'TSB-'))
+graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', name = 'TSB-'))
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', name = 'TSB+'))
 
 graf.write_image('pmc.png')

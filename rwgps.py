@@ -301,19 +301,19 @@ msg = """
 Bonjour,<br><br>
 Ride status du mois : <strong>{} h</strong><br>
 {} climb du mois : <strong>{} m</strong><br>
-Repos moyen du le mois : <strong>{} j</strong><br>
-Moving time du le mois : <strong>{} j {} h</strong><br><br>
+Repos moyen du le mois : <strong>{} j</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
 Ride status de l'année : <strong>{} h</strong><br>
-Repos moyen de l'année : <strong>{} j</strong><br>
-Moving time de l'année : <strong>{} j {} h</strong><br><br>
+Repos moyen de l'année : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br><br>
 <img src='cid:pmc'><br><br>
-gears :<br>{}<br>
-names :<br>{}<br>
+Moving time du le mois : <strong>{} j {} h</strong><br>
+Moving time de l'année : <strong>{} j {} h</strong><br>
+gears : {}<br>
+names : {}<br>
 <br>
-""".format(total_mtd, target_climb, climb_mtd, rest_mtd, days_mtd, hours_mtd, total_ytd, rest_ytd, days_ytd, hours_ytd, unique_gears, unique_names)
+""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

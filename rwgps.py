@@ -143,9 +143,12 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # YEARLY STATS
 velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
-velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index().T
-velotaf_stats = velotaf_stats.astype(int)
-velotaf_stats.index = ['An', 'Jours', 'Kms']
+velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index()
+velotaf_stats['KM_AVG'] = round(velotaf_stats['DISTANCE'] / velotaf_stats['DATE'], 1)
+velotaf_stats[['DATE', 'DISTANCE']] = velotaf_stats[['DATE', 'DISTANCE']].astype(int)
+velotaf_stats[['KM_AVG']] = round(velotaf_stats[['KM_AVG']], 1)
+velotaf_stats = velotaf_stats.T
+velotaf_stats.index = ['An', 'Jours', 'Km', 'AvgKm']
 velotaf_stats = velotaf_stats.reset_index()
 velotaf_stats.columns = velotaf_stats.iloc[0].to_list()
 velotaf_stats = velotaf_stats.iloc[1:]
@@ -157,8 +160,8 @@ rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
-rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
-rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
+rides_stats['YYYY', 'DATE', 'DISTANCE'] = rides_stats['YYYY', 'DATE', 'DISTANCE'].astype(int)
+rides_stats['KM MOY', 'SPEED'] = round(rides_stats['KM MOY', 'SPEED'], 1)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
 rides_stats = rides_stats.reset_index()
@@ -361,7 +364,7 @@ Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br>
 <img src='cid:ytd'><br>
 <br>
-Stats des 6 derniers mois : <strong>{}</strong><br>
+<strong>Stats des 6 derniers mois</strong> : {}<br>
 <img src='cid:pmc'><br>
 <br>
 Moving time du le mois : <strong>{} j {} h</strong><br>
@@ -369,9 +372,9 @@ Moving time de l'année : <strong>{} j {} h</strong><br><br>
 gears : {}<br>
 names : {}<br>
 <br>
-Stats Velotaf : <strong>{}</strong><br>
-Stats Rides : <strong>{}</strong><br>
-Stats globales : <strong>{}</strong><br>
+<strong>Stats Velotaf</strong> : {}<br>
+<strong>Stats Rides</strong> : {}<br>
+<strong>Stats globales</strong> : {}<br>
 """.format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, build_table(semester_stats, 'blue_light', font_size='12px'), days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names, build_table(velotaf_stats, 'blue_light', font_size='12px'), build_table(rides_stats, 'blue_light', font_size='12px'), build_table(total_stats, 'blue_light', font_size='12px'))
 
 msgtext = MIMEText(msg, 'html')

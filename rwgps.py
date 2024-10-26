@@ -6,6 +6,7 @@ import pandas as pd
 # # Graphics
 import plotly.express as px
 import plotly.graph_objects as go
+from pretty_html_table import build_table
 # Built in
 import datetime as dt
 from dateutil.relativedelta import relativedelta
@@ -141,15 +142,27 @@ rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
 rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # YEARLY STATS
-velotaf_days = rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DATE'].nunique()
-velotaf_kms = int(rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DISTANCE'].sum())
+velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
+velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index().T
 
-ride_days = rides_ytd[rides_ytd['GEAR'].isin(['ROAD', 'GRAVEL'])]['DATE'].nunique()
-ride_kms = int(rides_ytd[rides_ytd['GEAR'].isin(['ROAD', 'GRAVEL'])]['DISTANCE'].sum())
-ride_avgkms = 0
-if ride_days > 0:
-    ride_avgkms = round(ride_kms / ride_days, 1)
-total_kms = int(rides_ytd['DISTANCE'].sum())
+rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
+rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'avg'], 'DUREE' : 'sum'}).reset_index()
+rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
+rides_stats = rides_stats.fillna(0)
+rides_stats = rides_stats.drop(['DUREE'], axis = 1)
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
+rides_stats = rides_stats.T
+
+total_stats = trips[['YYYY', 'DATE', 'DUREE']]
+total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().T
+
+semester_stats = trips[['YYYY', 'MM', 'DATE', 'DUREE']]
+semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
+semester_rides = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'MM', 'DISTANCE']]
+semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : 'avg'}).reset_index()
+semester_stats = pd.merge(semester_stats, semester_rides, how = leftn left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
+semester_stats = semester_stats.fillna(0)
+semester_stats = semester_stats.T
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
@@ -312,26 +325,25 @@ msg = """
 Bonjour,<br><br>
 Ride status du mois : <strong>{} h</strong><br>
 {} climb du mois : <strong>{} m</strong><br>
-Repos moyen du mois : <strong>{} j</strong><br><br>
+Repos moyen du mois : <strong>{} j</strong><br>
 <img src='cid:mtd'><br>
 <br>
 Ride status de l'année : <strong>{} h</strong><br>
-Repos moyen de l'année : <strong>{} j</strong><br><br>
+Repos moyen de l'année : <strong>{} j</strong><br>
 <img src='cid:ytd'><br>
 <br>
-Jours de Velotaf de l'année : <strong>{}</strong><br>
-Kms de Velotaf de l'année : <strong>{}</strong><br><br>
-Jours de Ride de l'année : <strong>{}</strong><br>
-Kms de Ride de l'année : <strong>{}</strong><br>
-Kms moyen de Ride de l'année : <strong>{}</strong><br>
-Kms total de l'année : <strong>{}</strong><br><br>
-<img src='cid:pmc'><br><br>
+Stats des 6 derniers mois : <strong>{}</strong><br>
+<img src='cid:pmc'><br>
+<br>
 Moving time du le mois : <strong>{} j {} h</strong><br>
 Moving time de l'année : <strong>{} j {} h</strong><br><br>
 gears : {}<br>
 names : {}<br>
 <br>
-""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, velotaf_days, velotaf_kms, ride_days, ride_kms, ride_avgkms, total_kms, days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names)
+Stats Velotaf : <strong>{}</strong><br>
+Stats Rides : <strong>{}</strong><br>
+Stats globales : <strong>{}</strong><br>
+""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, build_table(semester_stats, 'blue_light', font_size='12px'), days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names, build_table(velotaf_stats, 'blue_light', font_size='12px'), build_table(rides_stats, 'blue_light', font_size='12px'), build_table(total_stats, 'blue_light', font_size='12px'))
 
 msgtext = MIMEText(msg, 'html')
 

@@ -112,8 +112,8 @@ summer = pd.DataFrame([[30, 0, 0, 0, 0], [0, 0, 0, 0, 0], [20, 30, 70, 0, 0], [0
                       index = ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
                       columns = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
 
-unique_gears = trips['GEAR'].unique()
-unique_names = trips['NAME'].unique()
+unique_gears = ', '.join(trips['GEAR'].unique())
+unique_names = ', '.join(trips['NAME'].unique())
 
 # TARGET climbing for strength
 everest = 8849 # valid for summer, eg E
@@ -319,15 +319,15 @@ Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br>
 <br>
-Jours de Velotaf de l'année : <strong>{} h</strong><br>
-Kms de Velotaf de l'année : <strong>{} h</strong><br><br>
-Jours de Ride de l'année : <strong>{} h</strong><br>
-Kms de Ride de l'année : <strong>{} h</strong><br>
-Kms moyen de Ride de l'année : <strong>{} h</strong><br>
-Kms total de l'année : <strong>{} j</strong><br><br>
+Jours de Velotaf de l'année : <strong>{}</strong><br>
+Kms de Velotaf de l'année : <strong>{}</strong><br><br>
+Jours de Ride de l'année : <strong>{}</strong><br>
+Kms de Ride de l'année : <strong>{}</strong><br>
+Kms moyen de Ride de l'année : <strong>{}</strong><br>
+Kms total de l'année : <strong>{}</strong><br><br>
 <img src='cid:pmc'><br><br>
 Moving time du le mois : <strong>{} j {} h</strong><br>
-Moving time de l'année : <strong>{} j {} h</strong><br>
+Moving time de l'année : <strong>{} j {} h</strong><br><br>
 gears : {}<br>
 names : {}<br>
 <br>

@@ -153,13 +153,13 @@ velotaf_stats.columns = velotaf_stats.iloc[0].to_list()
 velotaf_stats = velotaf_stats.iloc[1:]
 
 rides_stats = trips[(trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'DATE', 'DISTANCE', 'DUREE', 'ELEVATION']]
-rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum', 'ELEVATION' : 'sum'}).reset_index()
-rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE', 'ELEVATION']
+rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean', 'max'], 'DUREE' : 'sum', 'ELEVATION' : ['sum', 'max']}).reset_index()
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'KM MAX', 'DUREE', 'ELEVATION', 'M MAX']
 rides_stats['SPEED'] = rides_stats['DISTANCE'] / rides_stats['DUREE']
 rides_stats['RATIO'] = rides_stats['ELEVATION'] / rides_stats['DISTANCE']
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE', 'ELEVATION'], axis = 1)
-rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED', 'RATIO']
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'KM MAX', 'M MAX', 'SPEED', 'RATIO']
 rides_stats['SPEED'] = rides_stats['SPEED'] * 10
 rides_stats['RATIO'] = rides_stats['RATIO'] * 10
 rides_stats = rides_stats.astype(int)
@@ -167,7 +167,7 @@ rides_stats['SPEED'] = rides_stats['SPEED'] / 10
 rides_stats['RATIO'] = rides_stats['RATIO'] / 10
 rides_stats = rides_stats.astype(str)
 rides_stats = rides_stats.T
-rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h', 'AvgRatio']
+rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'MaxKm', 'MaxM', 'Km/h', 'AvgRatio']
 rides_stats = rides_stats.reset_index()
 rides_stats.columns = rides_stats.iloc[0].to_list()
 rides_stats = rides_stats.iloc[1:]
@@ -180,9 +180,9 @@ total_stats = total_stats.reset_index()
 total_stats.columns = total_stats.iloc[0].to_list()
 total_stats = total_stats.iloc[1:]
 
-semester_stats = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DATE', 'DUREE']]
+semester_stats = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 3)).replace(day = 1)) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
-semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
+semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 3)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
 semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
 semester_rides.columns = ['YYYY', 'MM', 'KM_MAX', 'DISTANCE', 'ELEVATION']
 semester_rides['RATIO'] = semester_rides['ELEVATION'] / semester_rides['DISTANCE']
@@ -328,13 +328,13 @@ pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
 print(pmc[['DATE', 'TSS', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
 
-rolling_3m = edate - relativedelta(months = 3)
+rolling_3m = (edate - relativedelta(months = 3)).replace(day = 1)
 rolling_3m = str(rolling_3m.year) + '-' + str(rolling_3m.month).zfill(2) + '-' + str(rolling_3m.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_3m]
 
 # Création du graphique
 graf = go.Figure()
-graf.update_layout(title = 'PMC')
+# graf.update_layout(title = 'PMC')
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy', name = 'TSB-'))
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))

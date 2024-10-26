@@ -179,9 +179,9 @@ semester_stats = semester_stats.fillna(0)
 semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
 semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'DISTANCE']]
-semester_stats = semester_stats.T
 semester_stats[['YYYY-MM', 'DUREE']] = semester_stats[['YYYY-MM', 'DUREE']].astype(int)
 semester_stats[['DISTANCE']] = round(semester_stats[['DISTANCE']], 1)
+semester_stats = semester_stats.T
 semester_stats.columns = semester_stats.iloc[0, :]
 semester_stats.index = ['An', 'Heures', 'AvgKm']
 semester_stats = semester_stats.iloc[1:, :]

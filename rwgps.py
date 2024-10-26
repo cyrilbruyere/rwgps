@@ -159,7 +159,7 @@ total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : '
 semester_stats = trips[['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
 semester_rides = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'MM', 'DISTANCE']]
-semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : 'avg'}).reset_index()
+semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : 'mean'}).reset_index()
 semester_stats = pd.merge(semester_stats, semester_rides, how = left, left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
 semester_stats = semester_stats.fillna(0)
 semester_stats = semester_stats.T

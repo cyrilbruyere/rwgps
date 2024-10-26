@@ -184,10 +184,10 @@ semester_rides['RATIO'] = round(semester_rides['ELEVATION'] / semester_rides['DI
 semester_rides = semester_rides.drop(['DISTANCE', 'ELEVATION'], axis = 1)
 semester_stats = pd.merge(semester_stats, semester_rides, how = 'left', left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
 semester_stats = semester_stats.fillna(0)
+semester_stats = semester_stats.astype(int)
 semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
 semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
-semester_stats = semester_stats.astype(int)
 semester_stats = semester_stats.T
 semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
 semester_stats = semester_stats.reset_index()

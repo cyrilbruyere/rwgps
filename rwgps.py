@@ -145,8 +145,7 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index()
 velotaf_stats['KM_AVG'] = round(velotaf_stats['DISTANCE'] / velotaf_stats['DATE'], 1)
-velotaf_stats[['DATE', 'DISTANCE']] = velotaf_stats[['DATE', 'DISTANCE']].astype(int)
-velotaf_stats[['KM_AVG']] = np.round(velotaf_stats[['KM_AVG']], 1)
+velotaf_stats = velotaf_stats.astype(int)
 velotaf_stats = velotaf_stats.T
 velotaf_stats.index = ['An', 'Jours', 'Km', 'AvgKm']
 velotaf_stats = velotaf_stats.reset_index()
@@ -156,12 +155,12 @@ velotaf_stats = velotaf_stats.iloc[1:]
 rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
 rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum'}).reset_index()
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE']
-rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
+rides_stats['SPEED'] = rides_stats['DISTANCE'] / rides_stats['DUREE']
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
-rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
 rides_stats[['KM MOY', 'SPEED']] = np.round(rides_stats[['KM MOY', 'SPEED']], 1)
+rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
 rides_stats = rides_stats.reset_index()
@@ -188,8 +187,7 @@ semester_stats = semester_stats.fillna(0)
 semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
 semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
-semester_stats[['DUREE']] = semester_stats[['DUREE']].astype(int)
-semester_stats[['KM_AVG', 'RATIO']] = np.round(semester_stats[['KM_AVG', 'RATIO']], 1)
+semester_stats = semester_stats.astype(int)
 semester_stats = semester_stats.T
 semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
 semester_stats = semester_stats.reset_index()

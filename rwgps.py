@@ -160,8 +160,8 @@ rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
-rides_stats['YYYY', 'DATE', 'DISTANCE'] = rides_stats['YYYY', 'DATE', 'DISTANCE'].astype(int)
-rides_stats['KM MOY', 'SPEED'] = round(rides_stats['KM MOY', 'SPEED'], 1)
+rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
+rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
 rides_stats = rides_stats.reset_index()
@@ -179,7 +179,7 @@ total_stats = total_stats.iloc[1:]
 semester_stats = trips[trips['DATE'] > dt.date.today() - relativedelta(months = 6)][['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
 semester_rides = trips[(trips['DATE'] > dt.date.today() - relativedelta(months = 6)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL']))][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
-semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['mean', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
+semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
 semester_rides.columns = ['YYYY', 'MM', 'KM_AVG', 'DISTANCE', 'ELEVATION']
 semester_rides['RATIO'] = round(semester_rides['ELEVATION'] / semester_rides['DISTANCE'], 1)
 semester_rides = semester_rides.drop(['DISTANCE', 'ELEVATION'], axis = 1)
@@ -191,7 +191,7 @@ semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
 semester_stats[['DUREE']] = semester_stats[['DUREE']].astype(int)
 semester_stats[['KM_AVG', 'RATIO']] = round(semester_stats[['KM_AVG', 'RATIO']], 1)
 semester_stats = semester_stats.T
-semester_stats.index = ['An', 'Heures', 'AvgKm', 'Ratio']
+semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
 semester_stats = semester_stats.reset_index()
 semester_stats.columns = semester_stats.iloc[0].to_list()
 semester_stats = semester_stats.iloc[1:]

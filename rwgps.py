@@ -156,9 +156,9 @@ rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
-rides_stats = rides_stats.T
 rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
 rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
+rides_stats = rides_stats.T
 rides_stats.columns = rides_stats.iloc[0, :]
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
 rides_stats = rides_stats.iloc[1:, :]

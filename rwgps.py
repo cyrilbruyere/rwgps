@@ -163,6 +163,7 @@ rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED', 'RATIO']
 rides_stats['SPEED'] = rides_stats['SPEED'] * 10
 rides_stats = rides_stats.astype(int)
 rides_stats['SPEED'] = rides_stats['SPEED'] / 10
+rides_stats = rides_stats.astype(str)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h', 'AvgRatio']
 rides_stats = rides_stats.reset_index()

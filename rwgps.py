@@ -147,7 +147,7 @@ velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTAN
 velotaf_stats = velotaf_stats.astype(int)
 velotaf_stats.index = ['An', 'Jours', 'Kms']
 velotaf_stats = velotaf_stats.reset_index()
-# velotaf_stats.columns = velotaf_stats.iloc[0, :]
+velotaf_stats.columns = velotaf_stats.iloc[0, :]
 # velotaf_stats = velotaf_stats.iloc[1:, :]
 
 rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]

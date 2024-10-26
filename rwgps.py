@@ -145,8 +145,8 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index().T
 velotaf_stats = velotaf_stats.astype(int)
-velotaf_stats.columns = velotaf_stats.iloc[0, :]
 velotaf_stats.index = ['An', 'Jours', 'Kms']
+velotaf_stats.columns = velotaf_stats.iloc[0, :]
 velotaf_stats = velotaf_stats.iloc[1:, :]
 velotaf_stats = velotaf_stats.reset_index()
 
@@ -160,16 +160,16 @@ rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
 rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
 rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
 rides_stats = rides_stats.T
-rides_stats.columns = rides_stats.iloc[0, :]
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
+rides_stats.columns = rides_stats.iloc[0, :]
 rides_stats = rides_stats.iloc[1:, :]
 rides_stats = rides_stats.reset_index()
 
 total_stats = trips[['YYYY', 'DATE', 'DUREE']]
 total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().T
 total_stats = total_stats.astype(int)
-total_stats.columns = total_stats.iloc[0, :]
 total_stats.index = ['An', 'Jours', 'Heures']
+total_stats.columns = total_stats.iloc[0, :]
 total_stats = total_stats.iloc[1:, :]
 total_stats = total_stats.reset_index()
 
@@ -188,8 +188,8 @@ semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
 semester_stats[['DUREE']] = semester_stats[['DUREE']].astype(int)
 semester_stats[['KM_AVG', 'RATIO']] = round(semester_stats[['KM_AVG', 'RATIO']], 1)
 semester_stats = semester_stats.T
-semester_stats.columns = semester_stats.iloc[0, :]
 semester_stats.index = ['An', 'Heures', 'AvgKm', 'Ratio']
+semester_stats.columns = semester_stats.iloc[0, :]
 semester_stats = semester_stats.iloc[1:, :]
 semester_stats = semester_stats.reset_index()
 

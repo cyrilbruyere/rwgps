@@ -146,7 +146,7 @@ velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index()
 velotaf_stats['KM_AVG'] = round(velotaf_stats['DISTANCE'] / velotaf_stats['DATE'], 1)
 velotaf_stats[['DATE', 'DISTANCE']] = velotaf_stats[['DATE', 'DISTANCE']].astype(int)
-velotaf_stats[['KM_AVG']] = round(velotaf_stats[['KM_AVG']], 1)
+velotaf_stats[['KM_AVG']] = np.round(velotaf_stats[['KM_AVG']], 1)
 velotaf_stats = velotaf_stats.T
 velotaf_stats.index = ['An', 'Jours', 'Km', 'AvgKm']
 velotaf_stats = velotaf_stats.reset_index()
@@ -161,7 +161,7 @@ rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
 rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
-rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
+rides_stats[['KM MOY', 'SPEED']] = np.round(rides_stats[['KM MOY', 'SPEED']], 1)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
 rides_stats = rides_stats.reset_index()
@@ -189,7 +189,7 @@ semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
 semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
 semester_stats[['DUREE']] = semester_stats[['DUREE']].astype(int)
-semester_stats[['KM_AVG', 'RATIO']] = round(semester_stats[['KM_AVG', 'RATIO']], 1)
+semester_stats[['KM_AVG', 'RATIO']] = np.round(semester_stats[['KM_AVG', 'RATIO']], 1)
 semester_stats = semester_stats.T
 semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
 semester_stats = semester_stats.reset_index()
@@ -357,14 +357,14 @@ msg = """
 Bonjour,<br><br>
 Ride status du mois : <strong>{} h</strong><br>
 {} climb du mois : <strong>{} m</strong><br>
-Repos moyen du mois : <strong>{} j</strong><br>
+Repos moyen du mois : <strong>{} j</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
 Ride status de l'année : <strong>{} h</strong><br>
-Repos moyen de l'année : <strong>{} j</strong><br>
+Repos moyen de l'année : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br>
 <br>
-<strong>Stats des 6 derniers mois</strong> : {}<br>
+<strong>Stats des 6 derniers mois</strong> : {}<br><br>
 <img src='cid:pmc'><br>
 <br>
 Moving time du le mois : <strong>{} j {} h</strong><br>

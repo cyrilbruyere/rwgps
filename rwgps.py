@@ -142,7 +142,7 @@ rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
 rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # YEARLY STATS
-velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
+velotaf_stats = trips[(trips['NAME'] == 'Velotaf') & (trips['YYYY'] > 2013)][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index()
 velotaf_stats['KM_AVG'] = round(velotaf_stats['DISTANCE'] / velotaf_stats['DATE'], 1)
 velotaf_stats = velotaf_stats.astype(int)
@@ -152,7 +152,7 @@ velotaf_stats = velotaf_stats.reset_index()
 velotaf_stats.columns = velotaf_stats.iloc[0].to_list()
 velotaf_stats = velotaf_stats.iloc[1:]
 
-rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE', 'ELEVATION']]
+rides_stats = trips[(trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'DATE', 'DISTANCE', 'DUREE', 'ELEVATION']]
 rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum', 'ELEVATION' : 'sum'}).reset_index()
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE', 'ELEVATION']
 rides_stats['SPEED'] = rides_stats['DISTANCE'] / rides_stats['DUREE']
@@ -161,8 +161,10 @@ rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE', 'ELEVATION'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED', 'RATIO']
 rides_stats['SPEED'] = rides_stats['SPEED'] * 10
+rides_stats['RATIO'] = rides_stats['RATIO'] * 10
 rides_stats = rides_stats.astype(int)
 rides_stats['SPEED'] = rides_stats['SPEED'] / 10
+rides_stats['RATIO'] = rides_stats['RATIO'] / 10
 rides_stats = rides_stats.astype(str)
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h', 'AvgRatio']
@@ -170,7 +172,7 @@ rides_stats = rides_stats.reset_index()
 rides_stats.columns = rides_stats.iloc[0].to_list()
 rides_stats = rides_stats.iloc[1:]
 
-total_stats = trips[['YYYY', 'DATE', 'DUREE']]
+total_stats = trips[trips['YYYY'] > 2013][['YYYY', 'DATE', 'DUREE']]
 total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().T
 total_stats = total_stats.astype(int)
 total_stats.index = ['An', 'Jours', 'Heures']
@@ -178,21 +180,24 @@ total_stats = total_stats.reset_index()
 total_stats.columns = total_stats.iloc[0].to_list()
 total_stats = total_stats.iloc[1:]
 
-semester_stats = trips[trips['DATE'] > dt.date.today() - relativedelta(months = 6)][['YYYY', 'MM', 'DATE', 'DUREE']]
+semester_stats = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
-semester_rides = trips[(trips['DATE'] > dt.date.today() - relativedelta(months = 6)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL']))][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
+semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL']))) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
 semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
 semester_rides.columns = ['YYYY', 'MM', 'KM_MAX', 'DISTANCE', 'ELEVATION']
 semester_rides['RATIO'] = semester_rides['ELEVATION'] / semester_rides['DISTANCE']
 semester_rides = semester_rides.drop(['DISTANCE', 'ELEVATION'], axis = 1)
 semester_stats = pd.merge(semester_stats, semester_rides, how = 'left', left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
 semester_stats = semester_stats.fillna(0)
+semester_stats['DUREE'] = semester_stats['DUREE'] * 10
 semester_stats = semester_stats.astype(int)
+semester_stats['DUREE'] = semester_stats['DUREE'] / 10
+semester_stats = semester_stats.astype(str)
 semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
 semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_MAX', 'RATIO']]
 semester_stats = semester_stats.T
-semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
+semester_stats.index = ['An', 'Heures', 'MaxKm*', 'AvgRatio*']
 semester_stats = semester_stats.reset_index()
 semester_stats.columns = semester_stats.iloc[0].to_list()
 semester_stats = semester_stats.iloc[1:]
@@ -365,7 +370,7 @@ Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br>
 <br>
-<strong>Stats des 6 derniers mois</strong> : {}<br><br>
+<strong>Stats des 6 derniers mois</strong> (* ROAD & GRAVEL) : {}<br><br>
 <img src='cid:pmc'><br>
 <br>
 Moving time du le mois : <strong>{} j {} h</strong><br>
@@ -374,7 +379,7 @@ gears : {}<br>
 names : {}<br>
 <br>
 <strong>Stats Velotaf</strong> : {}<br>
-<strong>Stats Rides</strong> : {}<br>
+<strong>Stats ROAD & GRAVEL</strong> : {}<br>
 <strong>Stats globales</strong> : {}<br>
 """.format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, build_table(semester_stats, 'blue_light', font_size='12px'), days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names, build_table(velotaf_stats, 'blue_light', font_size='12px'), build_table(rides_stats, 'blue_light', font_size='12px'), build_table(total_stats, 'blue_light', font_size='12px'))
 

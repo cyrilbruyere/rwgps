@@ -145,9 +145,9 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index().T
 velotaf_stats = velotaf_stats.astype(int)
-velotaf_stats.columns = velotaf_stats.iloc[0, :]
-velotaf_stats.index = ['An', 'Jours', 'Kms']
-velotaf_stats = velotaf_stats.iloc[1:, :]
+# velotaf_stats.columns = velotaf_stats.iloc[0, :]
+# velotaf_stats.index = ['An', 'Jours', 'Kms']
+# velotaf_stats = velotaf_stats.iloc[1:, :]
 
 rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
 rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum'}).reset_index()

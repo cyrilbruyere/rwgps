@@ -152,17 +152,19 @@ velotaf_stats = velotaf_stats.reset_index()
 velotaf_stats.columns = velotaf_stats.iloc[0].to_list()
 velotaf_stats = velotaf_stats.iloc[1:]
 
-rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
-rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum'}).reset_index()
-rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE']
+rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE', 'ELEVATION']]
+rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum', 'ELEVATION' : 'sum'}).reset_index()
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE', 'ELEVATION']
 rides_stats['SPEED'] = rides_stats['DISTANCE'] / rides_stats['DUREE']
+rides_stats['RATIO'] = rides_stats['ELEVATION'] / rides_stats['DISTANCE']
 rides_stats = rides_stats.fillna(0)
-rides_stats = rides_stats.drop(['DUREE'], axis = 1)
-rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
-rides_stats[['KM MOY', 'SPEED']] = np.round(rides_stats[['KM MOY', 'SPEED']], 1)
-rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
+rides_stats = rides_stats.drop(['DUREE', 'ELEVATION'], axis = 1)
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED', 'RATIO']
+rides_stats[['SPEED']] = rides_stats[['SPEED']] * 10
+rides_stats = rides_stats.astype(int)
+rides_stats[['SPEED']] = rides_stats[['SPEED']] / 10
 rides_stats = rides_stats.T
-rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
+rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h', 'AvgRatio']
 rides_stats = rides_stats.reset_index()
 rides_stats.columns = rides_stats.iloc[0].to_list()
 rides_stats = rides_stats.iloc[1:]

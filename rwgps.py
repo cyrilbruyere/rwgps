@@ -160,9 +160,9 @@ rides_stats['RATIO'] = rides_stats['ELEVATION'] / rides_stats['DISTANCE']
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE', 'ELEVATION'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED', 'RATIO']
-rides_stats[['SPEED']] = rides_stats[['SPEED']] * 10
+rides_stats['SPEED'] = rides_stats['SPEED'] * 10
 rides_stats = rides_stats.astype(int)
-rides_stats[['SPEED']] = rides_stats[['SPEED']] / 10
+rides_stats['SPEED'] = rides_stats['SPEED'] / 10
 rides_stats = rides_stats.T
 rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h', 'AvgRatio']
 rides_stats = rides_stats.reset_index()
@@ -181,15 +181,15 @@ semester_stats = trips[trips['DATE'] > dt.date.today() - relativedelta(months = 
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
 semester_rides = trips[(trips['DATE'] > dt.date.today() - relativedelta(months = 6)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL']))][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
 semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
-semester_rides.columns = ['YYYY', 'MM', 'KM_AVG', 'DISTANCE', 'ELEVATION']
-semester_rides['RATIO'] = round(semester_rides['ELEVATION'] / semester_rides['DISTANCE'], 1)
+semester_rides.columns = ['YYYY', 'MM', 'KM_MAX', 'DISTANCE', 'ELEVATION']
+semester_rides['RATIO'] = semester_rides['ELEVATION'] / semester_rides['DISTANCE']
 semester_rides = semester_rides.drop(['DISTANCE', 'ELEVATION'], axis = 1)
 semester_stats = pd.merge(semester_stats, semester_rides, how = 'left', left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
 semester_stats = semester_stats.fillna(0)
 semester_stats = semester_stats.astype(int)
 semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
 semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
-semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_AVG', 'RATIO']]
+semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_MAX', 'RATIO']]
 semester_stats = semester_stats.T
 semester_stats.index = ['An', 'Heures', 'MaxKm', 'AvgRatio']
 semester_stats = semester_stats.reset_index()

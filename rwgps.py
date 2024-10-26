@@ -144,6 +144,10 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 # YEARLY STATS
 velotaf_stats = trips[trips['NAME'] == 'Velotaf'][['YYYY', 'DATE', 'DISTANCE']]
 velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index().T
+velotaf_stats = velotaf_stats.astype(int)
+velotaf_stats.columns = velotaf_stats.iloc[0, :]
+velotaf_stats.index = ['An', 'Jours', 'Kms']
+velotaf_stats = velotaf_stats.iloc[1:, :]
 
 rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
 rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum'}).reset_index()
@@ -153,9 +157,18 @@ rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)
 rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'SPEED']
 rides_stats = rides_stats.T
+rides_stats[['YYYY', 'DATE', 'DISTANCE']] = rides_stats[['YYYY', 'DATE', 'DISTANCE']].astype(int)
+rides_stats[['KM MOY', 'SPEED']] = round(rides_stats[['KM MOY', 'SPEED']], 1)
+rides_stats.columns = rides_stats.iloc[0, :]
+rides_stats.index = ['An', 'Jours', 'Km', 'AvgKm', 'Km/h']
+rides_stats = rides_stats.iloc[1:, :]
 
 total_stats = trips[['YYYY', 'DATE', 'DUREE']]
 total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().T
+total_stats = total_stats.astype(int)
+total_stats.columns = total_stats.iloc[0, :]
+total_stats.index = ['An', 'Jours', 'Heures']
+total_stats = total_stats.iloc[1:, :]
 
 semester_stats = trips[['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
@@ -163,7 +176,15 @@ semester_rides = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'MM', 'D
 semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : 'mean'}).reset_index()
 semester_stats = pd.merge(semester_stats, semester_rides, how = 'left', left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
 semester_stats = semester_stats.fillna(0)
+semester_stats['YYYY-MM'] = semester_stats['YYYY'] + '-' + semester_stats['MM']
+semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
+semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'DISTANCE']]
 semester_stats = semester_stats.T
+semester_stats[['YYYY-MM', 'DUREE']] = semester_stats[['YYYY-MM', 'DUREE']].astype(int)
+semester_stats[['DISTANCE']] = round(semester_stats[['DISTANCE']], 1)
+semester_stats.columns = semester_stats.iloc[0, :]
+semester_stats.index = ['An', 'Heures', 'AvgKm']
+semester_stats = semester_stats.iloc[1:, :]
 
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]

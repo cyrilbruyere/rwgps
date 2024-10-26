@@ -144,9 +144,11 @@ rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 velotaf_days = rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DATE'].nunique()
 velotaf_kms = int(rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DISTANCE'].sum())
 
-ride_days = rides_ytd[rides_ytd['NAME'].isin(['ROAD', 'GRAVEL'])]['DATE'].nunique()
-ride_kms = int(rides_ytd[rides_ytd['NAME'].isin(['ROAD', 'GRAVEL'])]['DISTANCE'].sum())
-ride_avgkms = round(ride_kms / ride_days, 1)
+ride_days = rides_ytd[rides_ytd['GEAR'].isin(['ROAD', 'GRAVEL'])]['DATE'].nunique()
+ride_kms = int(rides_ytd[rides_ytd['GEAR'].isin(['ROAD', 'GRAVEL'])]['DISTANCE'].sum())
+ride_avgkms = 0
+if ride_days > 0:
+    ride_avgkms = round(ride_kms / ride_days, 1)
 total_kms = int(rides_ytd['DISTANCE'].sum())
 
 # SUMMARY YTD

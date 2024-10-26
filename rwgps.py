@@ -182,7 +182,7 @@ total_stats = total_stats.iloc[1:]
 
 semester_stats = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DATE', 'DUREE']]
 semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
-semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL']))) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
+semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 6)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
 semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
 semester_rides.columns = ['YYYY', 'MM', 'KM_MAX', 'DISTANCE', 'ELEVATION']
 semester_rides['RATIO'] = semester_rides['ELEVATION'] / semester_rides['DISTANCE']

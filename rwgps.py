@@ -140,6 +140,15 @@ day_of_month = dt.date.today().day
 rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
 rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
+# YEARLY STATS
+velotaf_days = rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DATE'].nunique()
+velotaf_kms = int(rides_ytd[rides_ytd['NAME'] == 'Velotaf']['DISTANCE'].sum())
+
+ride_days = rides_ytd[rides_ytd['NAME'].isin(['ROAD', 'GRAVEL'])]['DATE'].nunique()
+ride_kms = int(rides_ytd[rides_ytd['NAME'].isin(['ROAD', 'GRAVEL'])]['DISTANCE'].sum())
+ride_avgkms = round(ride_kms / ride_days, 1)
+total_kms = int(rides_ytd['DISTANCE'].sum())
+
 # SUMMARY YTD
 rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
 days_ytd = int(rides_ytd['DUREE'].sum() // 24)
@@ -301,19 +310,26 @@ msg = """
 Bonjour,<br><br>
 Ride status du mois : <strong>{} h</strong><br>
 {} climb du mois : <strong>{} m</strong><br>
-Repos moyen du le mois : <strong>{} j</strong><br><br>
+Repos moyen du mois : <strong>{} j</strong><br><br>
 <img src='cid:mtd'><br>
 <br>
 Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br><br>
-<img src='cid:ytd'><br><br>
+<img src='cid:ytd'><br>
+<br>
+Jours de Velotaf de l'année : <strong>{} h</strong><br>
+Kms de Velotaf de l'année : <strong>{} h</strong><br><br>
+Jours de Ride de l'année : <strong>{} h</strong><br>
+Kms de Ride de l'année : <strong>{} h</strong><br>
+Kms moyen de Ride de l'année : <strong>{} h</strong><br>
+Kms total de l'année : <strong>{} j</strong><br><br>
 <img src='cid:pmc'><br><br>
 Moving time du le mois : <strong>{} j {} h</strong><br>
 Moving time de l'année : <strong>{} j {} h</strong><br>
 gears : {}<br>
 names : {}<br>
 <br>
-""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names)
+""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, velotaf_days, velotaf_kms, ride_days, ride_kms, ride_avgkms, total_kms, days_mtd, hours_mtd, days_ytd, hours_ytd, unique_gears, unique_names)
 
 msgtext = MIMEText(msg, 'html')
 

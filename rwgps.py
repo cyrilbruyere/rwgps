@@ -147,6 +147,7 @@ velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTAN
 
 rides_stats = trips[trips['GEAR'].isin(['ROAD', 'GRAVEL'])][['YYYY', 'DATE', 'DISTANCE', 'DUREE']]
 rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean'], 'DUREE' : 'sum'}).reset_index()
+rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'DUREE']
 rides_stats['SPEED'] = round(rides_stats['DISTANCE'] / rides_stats['DUREE'], 1)
 rides_stats = rides_stats.fillna(0)
 rides_stats = rides_stats.drop(['DUREE'], axis = 1)

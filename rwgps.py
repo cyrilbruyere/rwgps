@@ -290,15 +290,17 @@ df.loc[(df['GEAR'] == 'HT') & (df['DUREE'] == 0), 'DUREE'] = 0.75
 df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'] == 0), 'DISTANCE'] = 21
 df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 
-df = df.drop(['GEAR'], axis = 1)
-df = df.groupby(['DATE']).sum().reset_index()
-
-df['SPEED'] = df['DISTANCE'] / df['DUREE']
-df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 # Facteur de correction pour la vitesse GRAVEL, URBAN & MTB
 df['COEF'] = 1
 df.loc[df['GEAR'].isin(['URBAN', 'GRAVEL']), 'COEF'] = 1.10
 df.loc[df['GEAR'].isin(['MTB']), 'COEF'] = 1.25
+df['DISTANCE'] = df['DISTANCE'] * df['COEF']
+
+df = df.drop(['GEAR', 'COEF'], axis = 1)
+df = df.groupby(['DATE']).sum().reset_index()
+
+df['SPEED'] = df['DISTANCE'] / df['DUREE']
+df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 
 df['IF'] = df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100

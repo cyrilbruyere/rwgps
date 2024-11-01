@@ -143,7 +143,7 @@ rest_mtd = 0
 if len(rides_ytd) > 0:
     rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
 if len(rides_mtd) > 0:
-rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
+    rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # YEARLY STATS
 velotaf_stats = trips[(trips['NAME'] == 'Velotaf') & (trips['YYYY'] > 2013)][['YYYY', 'DATE', 'DISTANCE']]

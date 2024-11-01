@@ -138,7 +138,11 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 day_of_year = dt.date.today().timetuple().tm_yday
 day_of_month = dt.date.today().day
 
-rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
+rest_ytd = 0
+rest_mtd = 0
+if len(rides_ytd) > 0:
+    rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
+if len(rides_mtd) > 0:
 rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
 
 # YEARLY STATS
@@ -377,7 +381,7 @@ Ride status de l'année : <strong>{} h</strong><br>
 Repos moyen de l'année : <strong>{} j</strong><br><br>
 <img src='cid:ytd'><br>
 <br>
-<strong>Stats des 6 derniers mois</strong> (* ROAD & GRAVEL) : {}<br><br>
+<strong>Stats des derniers mois</strong> (* ROAD & GRAVEL) : {}<br><br>
 <img src='cid:pmc'><br>
 <br>
 Moving time du le mois : <strong>{} j {} h</strong><br>

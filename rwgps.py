@@ -140,8 +140,8 @@ empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                       'DUREE' : [0, 0, 0, 0, 0]})
 rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
 rides_ytd = rides_ytd.groupby(['NAME']).sum().reset_index().fillna(0)
-total_ytd = pd.DataFrame({'NAME' : 'Total',
-                          'DUREE' : rides_ytd['DUREE'].sum()})
+total_ytd = pd.DataFrame({'NAME' : ['Total'],
+                          'DUREE' : [rides_ytd['DUREE'].sum()]})
 rides_ytd = pd.concat([rides_ytd, total_ytd], axis = 0)
 rides_ytd = pd.merge(target_ytd, rides_ytd, how = 'left', left_on = 'NAME', right_on = 'NAME')
 rides_ytd['STATUS'] = rides_ytd['DUREE'] - rides_ytd['TARGET']
@@ -157,8 +157,8 @@ empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
                       'DUREE' : [0, 0, 0, 0, 0]})
 rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
 rides_mtd = rides_mtd.groupby(['NAME']).sum().reset_index().fillna(0)
-total_mtd = pd.DataFrame({'NAME' : 'Total',
-                          'DUREE' : rides_mtd['DUREE'].sum()})
+total_mtd = pd.DataFrame({'NAME' : ['Total'],
+                          'DUREE' : [rides_mtd['DUREE'].sum()]})
 rides_mtd = pd.concat([rides_mtd, total_mtd], axis = 0) 
 rides_mtd = pd.merge(target_mtd, rides_mtd, how = 'left', left_on = 'NAME', right_on = 'NAME')
 rides_mtd['STATUS'] = rides_mtd['DUREE'] - rides_mtd['TARGET']

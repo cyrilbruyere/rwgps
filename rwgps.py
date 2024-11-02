@@ -177,7 +177,7 @@ df.loc[(df['GEAR'] == 'HT') & (df['DISTANCE'] == 0), 'DISTANCE'] = 21
 df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 
 # Facteur de correction pour la vitesse GRAVEL, URBAN & MTB
-df['COEF'] = 1
+df['COEF'] = 1.0
 df.loc[df['GEAR'].isin(['URBAN', 'GRAVEL']), 'COEF'] = 1.10
 df.loc[df['GEAR'].isin(['MTB']), 'COEF'] = 1.25
 df['DISTANCE_PMC'] = df['DISTANCE'] * df['COEF']
@@ -205,7 +205,7 @@ pmc['MM'] = pmc['DATE'].dt.month
 pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str)
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
-pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 pmc = pmc.fillna(0)
 
 pmc['ATL'] = 0

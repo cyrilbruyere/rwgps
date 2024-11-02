@@ -110,10 +110,10 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 ###################
 
 # 6 MONTH SEASONS' TARGETS
-winter = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'],
-                       'TARGET' : [10, 30, 20, 30, 10, 100]})
-summer = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'],
-                       'TARGE' : [50, 30, 70, 20, 0, 170]})
+winter = pd.DataFrame({'TARGET' : [10, 30, 20, 30, 10, 100]},
+                       index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
+summer = pd.DataFrame({'TARGE' : [50, 30, 70, 20, 0, 170]},
+                       index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
 
 # TARGET climbing for strength
 everest = 8849 # Asie
@@ -124,12 +124,11 @@ montblanc = 4809 # Europe
 # TARGE YTD, MTD
 target_ytd = min(3, mtd) * 1/6 * winter + max(0, mtd - 9) * 1/6 * winter + max(0, mtd - 3) * 1/6 * summer - max(0, mtd - 9) * 1/6 * summer
 target_mtd = 1/6 * winter
-target_climb = 'Mont Blanc'
-target_elevation = montblanc
 if mtd in [4, 5, 6, 7, 8, 9]:
     target_mtd = 1/6 * summer
-    target_climb = 'Everest'
-    target_elevation = everest
+
+target_ytd = target_ytd.reset_index()
+target_mtd = target_mtd.reset_index()
 
 #################
 ###   STATS   ###

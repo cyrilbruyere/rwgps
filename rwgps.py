@@ -97,28 +97,29 @@ trips = trips[['DATE', 'NAME', 'GEAR', 'DISTANCE', 'ELEVATION', 'DUREE', 'SPEED'
 
 trips = trips[trips['NAME'] !=  'NOE']
 
-####################
-###   HEATMAPS   ###
-####################
-
 # YTD, MTD
 ytd = dt.date.today().year
 mtd = dt.date.today().month
 
-# 6 MONTH SEASONS' TARGETS
-winter = pd.DataFrame([[10, 0, 0, 0, 10], [0, 30, 0, 0, 0], [0, 0, 20, 0, 0], [0, 0, 0, 30, 0], [0, 0, 0, 0, 0]],
-                      index = ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                      columns = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-summer = pd.DataFrame([[30, 0, 0, 0, 0], [0, 0, 0, 0, 0], [20, 30, 70, 0, 0], [0, 0, 0, 20, 0], [0, 0, 0, 0, 0]],
-                      index = ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                      columns = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+# RIDES YTD, MTD
+rides_ytd = trips[trips['YYYY'] == ytd].copy()
+rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 
-unique_gears = ', '.join(trips['GEAR'].unique())
-unique_names = ', '.join(trips['NAME'].unique())
+###################
+###   TARGETS   ###
+###################
+
+# 6 MONTH SEASONS' TARGETS
+winter = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'],
+                       'TARGET' : [10, 30, 20, 30, 10, 100]})
+summer = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'],
+                       'TARGE' : [50, 30, 70, 20, 0, 170]})
 
 # TARGET climbing for strength
-everest = 8849 # valid for summer, eg E
-montblanc = 4809 # valid for winter, eg H
+everest = 8849 # Asie
+aconcagua = 6962 # Amérique
+kilimandjaro = 5892 # Afrique
+montblanc = 4809 # Europe
 
 # TARGE YTD, MTD
 target_ytd = min(3, mtd) * 1/6 * winter + max(0, mtd - 9) * 1/6 * winter + max(0, mtd - 3) * 1/6 * summer - max(0, mtd - 9) * 1/6 * summer
@@ -130,163 +131,45 @@ if mtd in [4, 5, 6, 7, 8, 9]:
     target_climb = 'Everest'
     target_elevation = everest
 
-# RIDES YTD, MTD
-rides_ytd = trips[trips['YYYY'] == ytd].copy()
-rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
+#################
+###   STATS   ###
+#################
 
-# AVERAGE REST
-day_of_year = dt.date.today().timetuple().tm_yday
-day_of_month = dt.date.today().day
-
-rest_ytd = 0
-rest_mtd = 0
-if len(rides_ytd) > 0:
-    rest_ytd = round(day_of_year / rides_ytd['DATE'].nunique(), 1)
-if len(rides_mtd) > 0:
-    rest_mtd = round(day_of_month / rides_mtd['DATE'].nunique(), 1)
-
-# YEARLY STATS
-velotaf_stats = trips[(trips['NAME'] == 'Velotaf') & (trips['YYYY'] >= 2019)][['YYYY', 'DATE', 'DISTANCE']]
-velotaf_stats = velotaf_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : 'sum'}).reset_index()
-velotaf_stats['KM_AVG'] = round(velotaf_stats['DISTANCE'] / velotaf_stats['DATE'], 1)
-velotaf_stats = velotaf_stats.astype(int)
-velotaf_stats = velotaf_stats.T
-velotaf_stats.index = ['An', 'Jours', 'Km', 'AvgKm']
-velotaf_stats = velotaf_stats.reset_index()
-velotaf_stats.columns = velotaf_stats.iloc[0].to_list()
-velotaf_stats = velotaf_stats.iloc[1:]
-
-rides_stats = trips[(trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'DATE', 'DISTANCE', 'DUREE', 'ELEVATION']]
-rides_stats = rides_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DISTANCE' : ['sum', 'mean', 'max'], 'DUREE' : 'sum', 'ELEVATION' : ['sum', 'max']}).reset_index()
-rides_stats.columns = ['YYYY', 'DATE', 'DISTANCE', 'KM MOY', 'KM MAX', 'DUREE', 'ELEVATION', 'M MAX']
-rides_stats['SPEED'] = rides_stats['DISTANCE'] / rides_stats['DUREE']
-rides_stats['RATIO'] = rides_stats['ELEVATION'] / rides_stats['DISTANCE']
-rides_stats = rides_stats.fillna(0)
-rides_stats = rides_stats.drop(['DUREE', 'ELEVATION', 'DISTANCE'], axis = 1)
-rides_stats.columns = ['YYYY', 'DATE', 'KM MOY', 'KM MAX', 'M MAX', 'SPEED', 'RATIO']
-rides_stats['SPEED'] = rides_stats['SPEED'] * 10
-rides_stats['RATIO'] = rides_stats['RATIO'] * 10
-rides_stats = rides_stats.astype(int)
-rides_stats['SPEED'] = rides_stats['SPEED'] / 10
-rides_stats['RATIO'] = rides_stats['RATIO'] / 10
-rides_stats = rides_stats.astype(str)
-rides_stats = rides_stats.T
-rides_stats.index = ['An', 'Jours', 'AvgKm', 'MaxKm', 'MaxM', 'Km/h', 'AvgRatio']
-rides_stats = rides_stats.reset_index()
-rides_stats.columns = rides_stats.iloc[0].to_list()
-rides_stats = rides_stats.iloc[1:]
-
-total_stats = trips[trips['YYYY'] > 2013][['YYYY', 'DATE', 'DUREE', 'DISTANCE']]
-total_stats = total_stats.groupby(['YYYY']).agg({'DATE' : 'nunique', 'DUREE' : 'sum', 'DISTANCE' : 'sum'}).reset_index().T
-total_stats = total_stats.astype(int)
-total_stats.index = ['An', 'Jours', 'Heures', 'Km']
-total_stats = total_stats.reset_index()
-total_stats.columns = total_stats.iloc[0].to_list()
-total_stats = total_stats.iloc[1:]
-
-semester_stats = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 3)).replace(day = 1)) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DATE', 'DUREE']]
-semester_stats = semester_stats.groupby(['YYYY', 'MM']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index()
-semester_rides = trips[(trips['DATE'] > (dt.date.today() - relativedelta(months = 3)).replace(day = 1)) & (trips['GEAR'].isin(['ROAD', 'GRAVEL'])) & (trips['YYYY'] > 2013)][['YYYY', 'MM', 'DISTANCE', 'ELEVATION']]
-semester_rides = semester_rides.groupby(['YYYY', 'MM']).agg({'DISTANCE' : ['max', 'sum'], 'ELEVATION' : 'sum'}).reset_index()
-semester_rides.columns = ['YYYY', 'MM', 'KM_MAX', 'DISTANCE', 'ELEVATION']
-semester_rides['RATIO'] = semester_rides['ELEVATION'] / semester_rides['DISTANCE']
-semester_rides = semester_rides.drop(['DISTANCE', 'ELEVATION'], axis = 1)
-semester_stats = pd.merge(semester_stats, semester_rides, how = 'left', left_on = ['YYYY', 'MM'], right_on = ['YYYY', 'MM'])
-semester_stats = semester_stats.fillna(0)
-semester_stats['DUREE'] = semester_stats['DUREE'] * 10
-semester_stats = semester_stats.astype(int)
-semester_stats['DUREE'] = semester_stats['DUREE'] / 10
-semester_stats = semester_stats.astype(str)
-semester_stats['YYYY-MM'] = semester_stats['YYYY'].astype(str) + '-' + semester_stats['MM'].astype(str)
-semester_stats = semester_stats.drop(['YYYY', 'MM'], axis = 1)
-semester_stats = semester_stats[['YYYY-MM', 'DUREE', 'KM_MAX', 'RATIO']]
-semester_stats = semester_stats.T
-semester_stats.index = ['An', 'Heures', 'MaxKm*', 'AvgRatio*']
-semester_stats = semester_stats.reset_index()
-semester_stats.columns = semester_stats.iloc[0].to_list()
-semester_stats = semester_stats.iloc[1:]
-
-# SUMMARY YTD
-rides_ytd = rides_ytd[['GEAR', 'NAME', 'DUREE']]
-days_ytd = int(rides_ytd['DUREE'].sum() // 24)
-hours_ytd = int(rides_ytd['DUREE'].sum() % 24)
-empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [0, 0, 0, 0, 0]})
+# STATUS YTD
+rides_ytd = rides_ytd[rides_ytd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DUREE']]
+empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+                      'DUREE' : [0, 0, 0, 0, 0]})
 rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
-rides_ytd = rides_ytd.groupby(['GEAR', 'NAME']).sum()
-rides_ytd = rides_ytd.unstack('NAME')
-rides_ytd = rides_ytd.droplevel(0, axis = 1)
-rides_ytd = rides_ytd.rename_axis(index=None, columns=None)
-rides_ytd = rides_ytd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
+rides_ytd = rides_ytd.groupby(['NAME']).sum().reset_index().fillna(0)
+total_ytd = pd.DataFrame({'NAME' : 'Total',
+                          'DUREE' : rides_ytd['DUREE'].sum()})
+rides_ytd = pd.concat([rides_ytd, total_ytd], axis = 0)
+rides_ytd = pd.merge(target_ytd, rides_ytd, how = 'left', left_on = 'NAME', right_on = 'NAME')
+rides_ytd['STATUS'] = rides_ytd['DUREE'] - rides_ytd['TARGET']
+status_ytd = rides_ytd[['NAME', 'STATUS']].copy().T
+status_ytd.index = ['Quand', 'Status']
+status_ytd = status_ytd.reset_index()
+status_ytd.columns = status_ytd.iloc[0].to_list()
+status_ytd = status_ytd.iloc[1:]
 
-# SUMMARY MTD
-rides_mtd = rides_mtd[['GEAR', 'NAME', 'DUREE']]
-days_mtd = int(rides_mtd['DUREE'].sum() // 24)
-hours_mtd = int(rides_mtd['DUREE'].sum() % 24)
-climb_mtd = int(trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)]['ELEVATION'].sum() - target_elevation)
-empty = pd.DataFrame({'GEAR' : ['GRAVEL', 'HT', 'ROAD', 'URBAN', 'VTT'],
-                       'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                       'DUREE' : [0, 0, 0, 0, 0]})
+# STATUS MTD
+rides_mtd = rides_mtd[rides_mtd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DUREE']]
+empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
+                      'DUREE' : [0, 0, 0, 0, 0]})
 rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
-rides_mtd = rides_mtd.groupby(['GEAR', 'NAME']).sum()
-rides_mtd = rides_mtd.unstack('NAME')
-rides_mtd = rides_mtd.droplevel(0, axis = 1)
-rides_mtd = rides_mtd.rename_axis(index=None, columns=None)
-rides_mtd = rides_mtd[['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch']]
+rides_mtd = rides_mtd.groupby(['NAME']).sum().reset_index().fillna(0)
+total_mtd = pd.DataFrame({'NAME' : 'Total',
+                          'DUREE' : rides_mtd['DUREE'].sum()})
+rides_mtd = pd.concat([rides_mtd, total_mtd], axis = 0) 
+rides_mtd = pd.merge(target_mtd, rides_mtd, how = 'left', left_on = 'NAME', right_on = 'NAME')
+rides_mtd['STATUS'] = rides_mtd['DUREE'] - rides_mtd['TARGET']
+status_mtd = rides_mtd[['NAME', 'STATUS']].copy().T
+status_mtd.index = ['Quand', 'Status']
+status_mtd = status_mtd.reset_index()
+status_mtd.columns = status_mtd.iloc[0].to_list()
+status_mtd = status_mtd.iloc[1:]
 
-# STATUS YTD, MTD
-status_ytd = rides_ytd.fillna(0) - target_ytd
-status_mtd = rides_mtd.fillna(0) - target_mtd
-
-total_ytd = status_ytd.copy()
-total_mtd = status_mtd.copy()
-
-status_ytd = status_ytd.replace(0, np.nan)
-status_mtd = status_mtd.replace(0, np.nan)
-
-ytd_sum = status_ytd.sum(axis = 0).to_list()
-status_ytd.loc['SUM'] = ytd_sum
-
-mtd_sum = status_mtd.sum(axis = 0).to_list()
-status_mtd.loc['SUM'] = mtd_sum
-
-total_ytd = round(total_ytd.values.sum(), 1)
-total_mtd = round(total_mtd.values.sum(), 1)
-
-# HEATMAPS YTD, MTD
-fig_ytd = px.imshow(status_ytd.values,
-                    x = status_ytd.columns,
-                    y = status_ytd.index,
-                    text_auto = '.0f',
-                    color_continuous_scale = ['red', 'white', 'green'],
-                    color_continuous_midpoint = 0,
-                    aspect = 'auto')
-
-fig_ytd.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
-fig_ytd.update_xaxes(side = 'top')
-fig_ytd.update_traces(textfont_size = 28)
-
-fig_ytd.write_image('ytd.png')
-
-fig_mtd = px.imshow(status_mtd.values,
-                    x = status_mtd.columns,
-                    y = status_mtd.index,
-                    text_auto = '.1f',
-                    color_continuous_scale = ['red', 'white', 'green'],
-                    color_continuous_midpoint = 0,
-                    aspect = 'auto')
-
-fig_mtd.update_layout(coloraxis_showscale = False, font = dict(size = 18), plot_bgcolor = 'white')
-fig_mtd.update_xaxes(side = 'top')
-fig_mtd.update_traces(textfont_size = 28)
-
-fig_mtd.write_image('mtd.png')
-
-###############
-###   PMC   ###
-###############
-
+# PMC
 df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
 df = df.sort_values(['DATE'])
 
@@ -298,15 +181,16 @@ df.loc[(df['GEAR'] == 'HT') & (df['ELEVATION'] == 0), 'ELEVATION'] = 200
 df['COEF'] = 1
 df.loc[df['GEAR'].isin(['URBAN', 'GRAVEL']), 'COEF'] = 1.10
 df.loc[df['GEAR'].isin(['MTB']), 'COEF'] = 1.25
-df['DISTANCE'] = df['DISTANCE'] * df['COEF']
+df['DISTANCE_PMC'] = df['DISTANCE'] * df['COEF']
 
 df = df.drop(['GEAR', 'COEF'], axis = 1)
 df = df.groupby(['DATE']).sum().reset_index()
 
 df['SPEED'] = df['DISTANCE'] / df['DUREE']
+df['SPEED_PMC'] = df['DISTANCE_PMC'] / df['DUREE']
 df['RATIO'] = df['ELEVATION'] / df['DISTANCE']
 
-df['IF'] = df['SPEED'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
+df['IF'] = df['SPEED_PMC'] / 27.5 * np.power(df['RATIO'], 1/3) / math.pow(22.5, 1/3)
 df['TSS'] = df['DUREE'] * np.power(df ['IF'], 2) * 100
 df['DATE'] = df['DATE'].astype(str)
 
@@ -317,6 +201,9 @@ pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='
 pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
+pmc['YYYY'] = pmc['DATE'].dt.year
+pmc['MM'] = pmc['DATE'].dt.month
+pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str)
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
 pmc = pd.merge(pmc, df[['DATE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
@@ -337,8 +224,6 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
-print(pmc[['DATE', 'TSS', 'ATL', 'CTL', 'TSB+', 'TSB-']].head(20))
-
 rolling_3m = (edate - relativedelta(months = 3)).replace(day = 1)
 rolling_3m = str(rolling_3m.year) + '-' + str(rolling_3m.month).zfill(2) + '-' + str(rolling_3m.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_3m]
@@ -357,37 +242,47 @@ with open('pmc.png', 'rb') as file:
     msgImage_pmc = MIMEImage(file.read())
     msgImage_pmc.add_header('Content-ID', '<pmc>')
 
-# ENVOI DE L'EMAIL
+# Tendance
+trend = pmc[['YYYY-MM', 'DATE', 'DUREE', 'CTL', 'TSB+', 'TSB-']].copy()
+trend = trend.sort_values(['DATE'], ascending = True)
+trend['TSB'] = trend['TSB+'] + trend['TSB-']
+trend = trend[['YYYY-MM', 'DUREE', 'CTL', 'TSB', 'TSB-']]
+trend['ON'] = 0
+trend.loc[trend['DUREE'] > 0, 'ON'] = 1
+trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : ['sum', 'nunique'],
+                                        'ON' : 'sum',
+                                        'CTL' : ['first', 'mean'],
+                                        'TSB' : 'mean',
+                                        'TSB-' : 'min'}).reset_index()
+trend.columns = ['YYYY-MM', 'DUREE', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB']
+trend['REST'] = trend['DAYS'] / trend['ON']
+trend = trend.fillna(0)
+firstclt = trend['FstCTL'].to_list()
+lastclt = firstclt[1:]
+lastclt.append(pmc['CTL'].iloc[-1])
+trend['LstCTL'] = lastclt
+trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
 
-# Images à envoyer
-with open('ytd.png', 'rb') as file_ytd:
-    msgImage_ytd = MIMEImage(file_ytd.read())
-    msgImage_ytd.add_header('Content-ID', '<ytd>')
+trend = trend['YYYY-MM', 'DUREE', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB'].T
+trend.index = ['YYYY-MM', 'Heures', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
+trend = trend.reset_index()
+trend.columns = trend.iloc[0].to_list()
+trend = trend.iloc[1:]
 
-with open('mtd.png', 'rb') as file_mtd:
-    msgImage_mtd = MIMEImage(file_mtd.read())
-    msgImage_mtd.add_header('Content-ID', '<mtd>')
+#############
+### EMAIL ###
+#############
 
-# Texte à envoyer
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
 Bonjour,<br><br>
-Ride status du mois : <strong>{} h</strong><br>
-{} climb du mois : <strong>{} m</strong><br>
-Repos moyen du mois : <strong>{} j</strong><br><br>
-<img src='cid:mtd'><br>
+<strong>Etat du mois en cours</strong> : {}<br>
+<strong>Etat de l'année en cours</strong> : {}<br>
+<strong>Tendance des derniers mois</strong> : {}<br>
 <br>
-Ride status de l'année : <strong>{} h</strong><br>
-Repos moyen de l'année : <strong>{} j</strong><br><br>
-<img src='cid:ytd'><br>
-<br>
-<strong>Stats des derniers mois</strong> (* ROAD & GRAVEL) : {}<br><br>
 <img src='cid:pmc'><br>
-<br>
-<strong>Stats Velotaf</strong> : {}<br>
-<strong>Stats ROAD & GRAVEL</strong> : {}<br>
-<strong>Stats globales</strong> : {}<br>
-""".format(total_mtd, target_climb, climb_mtd, rest_mtd, total_ytd, rest_ytd, build_table(semester_stats, 'blue_light', font_size='12px'), build_table(velotaf_stats, 'blue_light', font_size='12px'), build_table(rides_stats, 'blue_light', font_size='12px'), build_table(total_stats, 'blue_light', font_size='12px'))
+
+""".format(build_table(status_mtd, 'blue_light', font_size='12px'), build_table(status_ytd, 'blue_light', font_size='12px'), build_table(trend, 'blue_light', font_size='12px'))
 
 msgtext = MIMEText(msg, 'html')
 

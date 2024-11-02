@@ -288,8 +288,6 @@ msgtext = MIMEText(msg, 'html')
 msg = MIMEMultipart()
 msg['Subject'] = 'Ride status'
 msg.attach(msgtext)
-msg.attach(msgImage_ytd)
-msg.attach(msgImage_mtd)
 msg.attach(msgImage_pmc)
 
 port = 465

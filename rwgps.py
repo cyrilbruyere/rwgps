@@ -262,7 +262,7 @@ lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
 
-trend = trend['YYYY-MM', 'DUREE', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB'].T
+trend = trend[['YYYY-MM', 'DUREE', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].T
 trend.index = ['YYYY-MM', 'Heures', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
 trend = trend.reset_index()
 trend.columns = trend.iloc[0].to_list()

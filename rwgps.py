@@ -127,8 +127,8 @@ target_mtd = 1/6 * winter
 if mtd in [4, 5, 6, 7, 8, 9]:
     target_mtd = 1/6 * summer
 
-target_ytd = target_ytd.reset_index()
-target_mtd = target_mtd.reset_index()
+target_ytd = target_ytd.reset_index(names = ['NAME'])
+target_mtd = target_mtd.reset_index(names = ['NAME'])
 
 #################
 ###   STATS   ###

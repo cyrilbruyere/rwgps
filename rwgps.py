@@ -284,7 +284,7 @@ trend['ELEVATION'] = trend['ELEVATION'] - montblanc
 trend.loc[trend['ELEVATION'] > montblanc - montblanc, 'ELEVATION'] = 'Mont Blanc'
 trend.loc[trend['ELEVATION'] > kilimandjaro - montblanc, 'ELEVATION'] = 'Kilimandjaro'
 trend.loc[trend['ELEVATION'] > aconcagua - montblanc, 'ELEVATION'] = 'Aconcagua'
-trend.loc[trend['ELEVATION'] > everest - montblanc, 'ELEVATION'] = 'Everest ' + round(trend['ELEVATION'] / everest, 1) 
+trend.loc[trend['ELEVATION'] > everest - montblanc, 'ELEVATION'] = 'Everest ' + str(round(trend['ELEVATION'] / everest, 1))
 trend = trend.astype(str)
 
 trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].T

@@ -105,6 +105,9 @@ mtd = dt.date.today().month
 rides_ytd = trips[trips['YYYY'] == ytd].copy()
 rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 
+# CURRENT REST
+current_rest = (dt.date.today - trips['DATE'].iloc[-1]).dt.days
+
 ###################
 ###   TARGETS   ###
 ###################
@@ -286,9 +289,9 @@ msg = """
 <br>
 <img src='cid:pmc'><br>
 
-""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'),
-           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'),
-           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'))
+""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'),
+           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'),
+           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'))
 
 msgtext = MIMEText(msg, 'html')
 

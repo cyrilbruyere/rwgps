@@ -106,7 +106,7 @@ rides_ytd = trips[trips['YYYY'] == ytd].copy()
 rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 
 # CURRENT REST
-current_rest = (dt.date.today() - trips['DATE'].sort_values(['DATE'], ascending = True).iloc[-1]).days
+current_rest = (dt.date.today() - trips['DATE'].sort_values(ascending = True).iloc[-1]).days
 
 ###################
 ###   TARGETS   ###

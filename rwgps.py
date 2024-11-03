@@ -213,8 +213,8 @@ pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 pmc = pmc.fillna(0)
 
-pmc['ATL'] = 0
-pmc['CTL'] = 0
+pmc['ATL'] = 0.0
+pmc['CTL'] = 0.0
 pmc = pmc.sort_values(['DATE'])
 pmc = pmc.reset_index()
 for index, row in pmc.iterrows():
@@ -262,6 +262,7 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
 trend.columns = ['YYYY-MM', 'DUREE', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB']
 trend['DUREE'] = round(trend['DUREE'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
+trend['REST'].iloc[-1] = round(current_rest, 1)
 trend = trend.fillna(0)
 firstclt = trend['FstCTL'].to_list()
 lastclt = firstclt[1:]
@@ -289,9 +290,9 @@ msg = """
 <br>
 <img src='cid:pmc'><br>
 
-""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'),
-           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'),
-           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '200px'))
+""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'),
+           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'),
+           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'))
 
 msgtext = MIMEText(msg, 'html')
 

@@ -278,13 +278,14 @@ lastclt = firstclt[1:]
 lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
-trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].astype(int)
+trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS', 'ELEVATION']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS', 'ELEVATION']].astype(int)
 # Summit
-trend['ELEVATION'] = round(trend['ELEVATION'] - montblanc, 1)
+trend['EVEREST'] = round(trend['ELEVATION'] / everest, 1)
+trend['ELEVATION'] = trend['ELEVATION'] - montblanc
 trend.loc[trend['ELEVATION'] > montblanc - montblanc, 'ELEVATION'] = 'Mont Blanc'
 trend.loc[trend['ELEVATION'] > kilimandjaro - montblanc, 'ELEVATION'] = 'Kilimandjaro'
 trend.loc[trend['ELEVATION'] > aconcagua - montblanc, 'ELEVATION'] = 'Aconcagua'
-trend.loc[trend['ELEVATION'] > everest - montblanc, 'ELEVATION'] = 'Everest ' + str(round(trend['ELEVATION'] / everest, 1))
+trend.loc[trend['ELEVATION'] > everest - montblanc, 'ELEVATION'] = 'Everest (' + trend['EVEREST'].astype(str) + ')'
 trend = trend.astype(str)
 
 trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].T

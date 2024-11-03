@@ -3,7 +3,7 @@ import requests
 # DATA transform
 import numpy as np
 import pandas as pd
-# # Graphics
+# Graphics
 import plotly.express as px
 import plotly.graph_objects as go
 from pretty_html_table import build_table
@@ -106,7 +106,7 @@ rides_ytd = trips[trips['YYYY'] == ytd].copy()
 rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 
 # CURRENT REST
-current_rest = (dt.date.today - trips['DATE'].iloc[-1]).dt.days
+current_rest = (dt.date.today() - trips['DATE'].iloc[-1]).dt.days
 
 ###################
 ###   TARGETS   ###

@@ -106,7 +106,7 @@ rides_ytd = trips[trips['YYYY'] == ytd].copy()
 rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 
 # CURRENT REST
-current_rest = (dt.date.today() - trips['DATE'].iloc[-1]).days
+current_rest = (dt.date.today() - trips['DATE'].sort_values(['DATE'], ascending = True).iloc[-1]).days
 
 ###################
 ###   TARGETS   ###
@@ -210,7 +210,7 @@ pmc['MM'] = pmc['DATE'].dt.month
 pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str).str.zfill(2)
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
-pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
+pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'ELEVATION', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
 pmc = pmc.fillna(0)
 
 pmc['ATL'] = 0.0
@@ -247,19 +247,20 @@ with open('pmc.png', 'rb') as file:
     msgImage_pmc.add_header('Content-ID', '<pmc>')
 
 # Tendance
-trend = pmc[['YYYY-MM', 'DATE', 'DUREE', 'CTL', 'TSB+', 'TSB-']].copy()
+trend = pmc[['YYYY-MM', 'DATE', 'DUREE', 'ELEVATION', 'CTL', 'TSB+', 'TSB-']].copy()
 trend = trend.sort_values(['DATE'], ascending = True)
 trend['TSB'] = trend['TSB+'] + trend['TSB-']
-trend = trend[['YYYY-MM', 'DUREE', 'DATE', 'CTL', 'TSB', 'TSB-']]
+trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'DATE', 'CTL', 'TSB', 'TSB-']]
 trend['ON'] = 0
 trend.loc[trend['DUREE'] > 0, 'ON'] = 1
 trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
+                                        'ELEVATION' : 'sum',
                                         'DATE' : 'nunique',
                                         'ON' : 'sum',
                                         'CTL' : ['first', 'mean'],
                                         'TSB' : 'mean',
                                         'TSB-' : 'min'}).reset_index()
-trend.columns = ['YYYY-MM', 'DUREE', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB']
+trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB']
 trend['DUREE'] = round(trend['DUREE'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
 trend['REST'].iloc[-1] = round(current_rest, 1)
@@ -269,11 +270,11 @@ lastclt = firstclt[1:]
 lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
-trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].astype(int)
+trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']] = trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].astype(int)
 trend = trend.astype(str)
 
-trend = trend[['YYYY-MM', 'DUREE', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].T
-trend.index = ['YYYY-MM', 'Heures', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
+trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].T
+trend.index = ['YYYY-MM', 'Heures', 'Sommet', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
 trend = trend.reset_index()
 trend.columns = trend.iloc[0].to_list()
 trend = trend.iloc[1:]
@@ -290,9 +291,9 @@ msg = """
 <br>
 <img src='cid:pmc'><br>
 
-""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'),
-           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'),
-           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '100px'))
+""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
+           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
+           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'))
 
 msgtext = MIMEText(msg, 'html')
 

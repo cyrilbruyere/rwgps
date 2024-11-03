@@ -286,7 +286,9 @@ msg = """
 <br>
 <img src='cid:pmc'><br>
 
-""".format(build_table(status_mtd, 'blue_light', font_size='12px'), build_table(status_ytd, 'blue_light', font_size='12px'), build_table(trend, 'blue_light', font_size='12px'))
+""".format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'),
+           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'),
+           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '400px'))
 
 msgtext = MIMEText(msg, 'html')
 

@@ -112,7 +112,7 @@ rides_mtd = trips[(trips['YYYY'] == ytd) & (trips['MM'] == mtd)].copy()
 # 6 MONTH SEASONS' TARGETS
 winter = pd.DataFrame({'TARGET' : [10, 30, 20, 30, 10, 100]},
                        index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
-summer = pd.DataFrame({'TARGE' : [50, 30, 70, 20, 0, 170]},
+summer = pd.DataFrame({'TARGET' : [50, 30, 70, 20, 0, 170]},
                        index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
 
 # TARGET climbing for strength
@@ -144,7 +144,8 @@ total_ytd = pd.DataFrame({'NAME' : ['Total'],
                           'DUREE' : [rides_ytd['DUREE'].sum()]})
 rides_ytd = pd.concat([rides_ytd, total_ytd], axis = 0)
 rides_ytd = pd.merge(target_ytd, rides_ytd, how = 'left', left_on = 'NAME', right_on = 'NAME')
-rides_ytd['STATUS'] = rides_ytd['DUREE'] - rides_ytd['TARGET']
+rides_ytd['STATUS'] = round(rides_ytd['DUREE'] - rides_ytd['TARGET'], 1)
+rides_ytd = rides_ytd.astype(str)
 status_ytd = rides_ytd[['NAME', 'STATUS']].copy().T
 status_ytd.index = ['Quand', 'Status']
 status_ytd = status_ytd.reset_index()
@@ -161,7 +162,8 @@ total_mtd = pd.DataFrame({'NAME' : ['Total'],
                           'DUREE' : [rides_mtd['DUREE'].sum()]})
 rides_mtd = pd.concat([rides_mtd, total_mtd], axis = 0) 
 rides_mtd = pd.merge(target_mtd, rides_mtd, how = 'left', left_on = 'NAME', right_on = 'NAME')
-rides_mtd['STATUS'] = rides_mtd['DUREE'] - rides_mtd['TARGET']
+rides_mtd['STATUS'] = round(rides_mtd['DUREE'] - rides_mtd['TARGET'], 1)
+rides_mtd = rides_mtd.astype(str)
 status_mtd = rides_mtd[['NAME', 'STATUS']].copy().T
 status_mtd.index = ['Quand', 'Status']
 status_mtd = status_mtd.reset_index()
@@ -202,7 +204,7 @@ pmc.columns = ['DATE']
 
 pmc['YYYY'] = pmc['DATE'].dt.year
 pmc['MM'] = pmc['DATE'].dt.month
-pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str)
+pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str).zfill(2)
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
 pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')
@@ -254,13 +256,16 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : ['sum', 'nunique'],
                                         'TSB' : 'mean',
                                         'TSB-' : 'min'}).reset_index()
 trend.columns = ['YYYY-MM', 'DUREE', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB']
-trend['REST'] = trend['DAYS'] / trend['ON']
+trend['DUREE'] = round(trend['DUREE'], 1)
+trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
 trend = trend.fillna(0)
 firstclt = trend['FstCTL'].to_list()
 lastclt = firstclt[1:]
 lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
+trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].astype(int)
+trend = trend.astype(str)
 
 trend = trend[['YYYY-MM', 'DUREE', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].T
 trend.index = ['YYYY-MM', 'Heures', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
@@ -274,7 +279,6 @@ trend = trend.iloc[1:]
 
 # msgtext = MIMEText('<br> <img src="cid:ytd"> </br>', 'html')
 msg = """
-Bonjour,<br><br>
 <strong>Etat du mois en cours</strong> : {}<br>
 <strong>Etat de l'année en cours</strong> : {}<br>
 <strong>Tendance des derniers mois</strong> : {}<br>

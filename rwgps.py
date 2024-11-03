@@ -154,6 +154,7 @@ status_ytd.index = ['Quand', 'Status']
 status_ytd = status_ytd.reset_index()
 status_ytd.columns = status_ytd.iloc[0].to_list()
 status_ytd = status_ytd.iloc[1:]
+status_ytd = status_ytd[['Quand', 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
 
 # STATUS MTD
 rides_mtd = rides_mtd[rides_mtd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DUREE']]
@@ -172,6 +173,7 @@ status_mtd.index = ['Quand', 'Status']
 status_mtd = status_mtd.reset_index()
 status_mtd.columns = status_mtd.iloc[0].to_list()
 status_mtd = status_mtd.iloc[1:]
+status_mtd = status_mtd[['Quand', 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
 
 # PMC
 df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
@@ -311,8 +313,7 @@ trend_2 = trend_2.iloc[1:]
 msg = """
 <strong>Etat du mois en cours</strong> : {}<br>
 <strong>Etat de l'année en cours</strong> : {}<br>
-<strong>Tendance des derniers mois</strong> : {}<br>
-{}<br>
+<strong>Tendance des derniers mois</strong> : {}{}<br>
 <img src='cid:pmc'><br>
 
 """.format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),

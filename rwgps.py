@@ -317,8 +317,8 @@ msg = """
 
 """.format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
            build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
-           build_table(trend_1, 'blue_light', font_size = '12px', text_align = 'center', width = '75px'),
-           build_table(trend_2, 'blue_light', font_size = '12px', text_align = 'center', width = '75px'))
+           build_table(trend_2, 'blue_light', font_size = '12px', text_align = 'center', width = '84px'),
+           build_table(trend_1, 'blue_light', font_size = '12px', text_align = 'center', width = '84px'))
 
 msgtext = MIMEText(msg, 'html')
 

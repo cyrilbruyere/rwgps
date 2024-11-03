@@ -230,9 +230,9 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
-rolling_3m = (edate - relativedelta(months = 3)).replace(day = 1)
-rolling_3m = str(rolling_3m.year) + '-' + str(rolling_3m.month).zfill(2) + '-' + str(rolling_3m.day).zfill(2)
-pmc = pmc[pmc['DATE'] > rolling_3m]
+rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
+rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
+pmc = pmc[pmc['DATE'] > rolling_months]
 
 # Création du graphique
 graf = go.Figure()
@@ -291,16 +291,16 @@ trend.loc[trend['ELEVATION'] > str(aconcagua - montblanc), 'ELEVATION'] = 'Aconc
 trend.loc[trend['ELEVATION'] > str(everest - montblanc), 'ELEVATION'] = 'Everest (x' + trend['EVEREST'].astype(str) + ')'
 trend = trend.astype(str)
 
-trend_1 = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].copy()
+trend_1 = trend[['YYYY-MM', 'DUREE', 'AvgCTL', 'CTL', 'REST', 'AvgTSB', 'MinTSB']].copy()
 trend_1 = trend_1.T
-trend_1.index = ['YYYY-MM', 'Heures', 'Sommet', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
+trend_1.index = ['YYYY-MM', 'Heures', 'avgCTL', 'gapCTL', 'Repos', 'avgTSB', 'minTSB']
 trend_1 = trend_1.reset_index()
 trend_1.columns = trend_1.iloc[0].to_list()
 trend_1 = trend_1.iloc[1:]
 
-trend_2 = trend[['YYYY-MM', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].copy()
+trend_2 = trend[['YYYY-MM', 'ELEVATION', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].copy()
 trend_2 = trend_2.T
-trend_2.index = ['YYYY-MM', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
+trend_2.index = ['YYYY-MM', 'Sommet', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
 trend_2 = trend_2.reset_index()
 trend_2.columns = trend_2.iloc[0].to_list()
 trend_2 = trend_2.iloc[1:]

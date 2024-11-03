@@ -267,7 +267,7 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
                                         '>100TSS' : 'sum',
                                         '>150TSS' : 'sum',
                                         '>200TSS' : 'sum',
-                                        'maxTSS' : 'max',}).reset_index()
+                                        'TSS' : 'max',}).reset_index()
 trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
 trend['DUREE'] = round(trend['DUREE'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
@@ -279,6 +279,12 @@ lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
 trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']] = trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].astype(int)
+# Summit
+trend['ELEVATION'] = trend['ELEVATION'] - montblanc
+trend.loc[trend['ELEVATION'] > montblanc - montblanc, 'ELEVATION'] = 'Mont Blanc'
+trend.loc[trend['ELEVATION'] > kilimandjaro - montblanc, 'ELEVATION'] = 'Kilimandjaro'
+trend.loc[trend['ELEVATION'] > aconcagua - montblanc, 'ELEVATION'] = 'Aconcagua'
+trend.loc[trend['ELEVATION'] > everest - montblanc, 'ELEVATION'] = 'Everest ' + round(trend['ELEVATION'] / everest, 1) 
 trend = trend.astype(str)
 
 trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].T

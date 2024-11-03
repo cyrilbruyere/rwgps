@@ -247,10 +247,11 @@ with open('pmc.png', 'rb') as file:
 trend = pmc[['YYYY-MM', 'DATE', 'DUREE', 'CTL', 'TSB+', 'TSB-']].copy()
 trend = trend.sort_values(['DATE'], ascending = True)
 trend['TSB'] = trend['TSB+'] + trend['TSB-']
-trend = trend[['YYYY-MM', 'DUREE', 'CTL', 'TSB', 'TSB-']]
+trend = trend[['YYYY-MM', 'DUREE', 'DATE', 'CTL', 'TSB', 'TSB-']]
 trend['ON'] = 0
 trend.loc[trend['DUREE'] > 0, 'ON'] = 1
-trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : ['sum', 'nunique'],
+trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
+                                        'DATE' : 'nunique',
                                         'ON' : 'sum',
                                         'CTL' : ['first', 'mean'],
                                         'TSB' : 'mean',

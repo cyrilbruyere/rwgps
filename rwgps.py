@@ -286,14 +286,22 @@ trend['ELEVATION'] = trend['ELEVATION'].astype(str)
 trend.loc[trend['ELEVATION'] > str(montblanc - montblanc), 'ELEVATION'] = 'Mont Blanc'
 trend.loc[trend['ELEVATION'] > str(kilimandjaro - montblanc), 'ELEVATION'] = 'Kilimandjaro'
 trend.loc[trend['ELEVATION'] > str(aconcagua - montblanc), 'ELEVATION'] = 'Aconcagua'
-trend.loc[trend['ELEVATION'] > str(everest - montblanc), 'ELEVATION'] = 'Everest (' + trend['EVEREST'].astype(str) + ')'
+trend.loc[trend['ELEVATION'] > str(everest - montblanc), 'ELEVATION'] = 'Everest (x' + trend['EVEREST'].astype(str) + ')'
 trend = trend.astype(str)
 
-trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].T
-trend.index = ['YYYY-MM', 'Heures', 'Sommet', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
-trend = trend.reset_index()
-trend.columns = trend.iloc[0].to_list()
-trend = trend.iloc[1:]
+trend_1 = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'REST', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB']].copy()
+trend_1 = trend_1.T
+trend_1.index = ['YYYY-MM', 'Heures', 'Sommet', 'Repos', 'gapCTL', 'avgCTL', 'avgTSB', 'minTSB']
+trend_1 = trend_1.reset_index()
+trend_1.columns = trend_1.iloc[0].to_list()
+trend_1 = trend_1.iloc[1:]
+
+trend_2 = trend[['YYYY-MM', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].copy()
+trend_2 = trend_2.T
+trend_2.index = ['YYYY-MM', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
+trend_2 = trend_2.reset_index()
+trend_2.columns = trend_2.iloc[0].to_list()
+trend_2 = trend_2.iloc[1:]
 
 #############
 ### EMAIL ###
@@ -304,12 +312,13 @@ msg = """
 <strong>Etat du mois en cours</strong> : {}<br>
 <strong>Etat de l'année en cours</strong> : {}<br>
 <strong>Tendance des derniers mois</strong> : {}<br>
-<br>
+{}<br>
 <img src='cid:pmc'><br>
 
 """.format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
            build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
-           build_table(trend, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'))
+           build_table(trend_1, 'blue_light', font_size = '12px', text_align = 'center', width = '75px'),
+           build_table(trend_2, 'blue_light', font_size = '12px', text_align = 'center', width = '75px'))
 
 msgtext = MIMEText(msg, 'html')
 

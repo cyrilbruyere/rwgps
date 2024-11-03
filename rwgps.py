@@ -270,6 +270,7 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
                                         'TSS' : 'max',}).reset_index()
 trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
 trend['DUREE'] = round(trend['DUREE'], 1)
+trend['ELEVATION'] = round(trend['ELEVATION'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
 trend['REST'].iloc[-1] = round(current_rest, 1)
 trend = trend.fillna(0)
@@ -278,7 +279,7 @@ lastclt = firstclt[1:]
 lastclt.append(pmc['CTL'].iloc[-1])
 trend['LstCTL'] = lastclt
 trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
-trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']] = trend[['ELEVATION', 'CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].astype(int)
+trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].astype(int)
 # Summit
 trend['ELEVATION'] = trend['ELEVATION'] - montblanc
 trend.loc[trend['ELEVATION'] > montblanc - montblanc, 'ELEVATION'] = 'Mont Blanc'

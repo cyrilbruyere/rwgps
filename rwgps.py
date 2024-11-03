@@ -204,7 +204,7 @@ pmc.columns = ['DATE']
 
 pmc['YYYY'] = pmc['DATE'].dt.year
 pmc['MM'] = pmc['DATE'].dt.month
-pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str).zfill(2)
+pmc['YYYY-MM'] = pmc['YYYY'].astype(str) + '-' + pmc['MM'].astype(str).str.zfill(2)
 pmc['DATE'] = pmc['DATE'].dt.strftime('%Y-%m-%d')
 
 pmc = pd.merge(pmc, df[['DATE', 'DUREE', 'TSS']], how = 'left', left_on = 'DATE', right_on = 'DATE')

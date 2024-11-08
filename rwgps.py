@@ -203,7 +203,7 @@ df['DATE'] = df['DATE'].astype(str)
 # Toutes les dates doivent être prises en compte
 sdate = dt.date(2014, 1, 1)   # start date
 edate = dt.date.today()   # end date
-pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='d'))
+pmc = pd.DataFrame(index = pd.date_range(sdate,edate,freq='d'))
 pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 

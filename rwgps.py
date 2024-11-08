@@ -234,6 +234,8 @@ rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
 
+print(pmc['DATE'].max())
+
 # Création du graphique
 graf = go.Figure()
 # graf.update_layout(title = 'PMC')
@@ -273,7 +275,8 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
 trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
 trend['DUREE'] = round(trend['DUREE'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
-trend['REST'].iloc[-1] = round(current_rest, 1)
+if trend['ON'].iloc[-1] == 0:
+    trend['REST'].iloc[-1] = round(current_rest, 1)
 trend = trend.fillna(0)
 firstclt = trend['FstCTL'].to_list()
 lastclt = firstclt[1:]

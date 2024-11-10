@@ -203,7 +203,7 @@ df['DATE'] = df['DATE'].astype(str)
 # Toutes les dates doivent être prises en compte
 sdate = dt.date(2014, 1, 1)   # start date
 edate = dt.date.today()   # end date
-pmc = pd.DataFrame(index = pd.date_range(sdate,edate-dt.timedelta(days=1),freq='d'))
+pmc = pd.DataFrame(index = pd.date_range(sdate,edate,freq='d'))
 pmc = pmc.reset_index()
 pmc.columns = ['DATE']
 
@@ -233,6 +233,8 @@ pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
+
+print(pmc['DATE'].max())
 
 # Création du graphique
 graf = go.Figure()
@@ -273,7 +275,8 @@ trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
 trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
 trend['DUREE'] = round(trend['DUREE'], 1)
 trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
-trend['REST'].iloc[-1] = round(current_rest, 1)
+if trend['ON'].iloc[-1] == 0:
+    trend['REST'].iloc[-1] = round(current_rest, 1)
 trend = trend.fillna(0)
 firstclt = trend['FstCTL'].to_list()
 lastclt = firstclt[1:]

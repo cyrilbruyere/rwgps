@@ -256,9 +256,9 @@ trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'DATE', 'CTL', 'TSB', 'TSB-', 'T
 trend['ON'] = 0
 trend.loc[trend['DUREE'] > 0, 'ON'] = 1
 trend[['>100TSS', '>150TSS', '>200TSS']] = [0, 0, 0]
-trend.loc[trend['TSS'] > 100, '>100TSS'] = 1
-trend.loc[trend['TSS'] > 150, '>150TSS'] = 1
-trend.loc[trend['TSS'] > 200, '>200TSS'] = 1
+trend.loc[trend['TSS'] > 100, ['>100TSS', '>150TSS', '>200TSS']] = [1, 0, 0]
+trend.loc[trend['TSS'] > 150, ['>100TSS', '>150TSS', '>200TSS']] = [0, 1, 0]
+trend.loc[trend['TSS'] > 200, ['>100TSS', '>150TSS', '>200TSS']] = [0, 0, 1]
 trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
                                         'ELEVATION' : 'sum',
                                         'DATE' : 'nunique',

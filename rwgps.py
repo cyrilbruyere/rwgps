@@ -113,67 +113,129 @@ current_rest = (dt.date.today() - trips['DATE'].sort_values(ascending = True).il
 ###################
 
 # 6 MONTH SEASONS' TARGETS
-winter = pd.DataFrame({'TARGET' : [10, 30, 20, 30, 10, 100]},
-                       index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
-summer = pd.DataFrame({'TARGET' : [50, 30, 70, 20, 0, 170]},
-                       index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch', 'Total'])
-
-# TARGET climbing for strength
-everest = 8849 # Asie
-aconcagua = 6962 # Amérique
-kilimandjaro = 5892 # Afrique
-montblanc = 4809 # Europe
+jan = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [3, 3, 8, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+feb = pd.DataFrame({'COUNT' : [1, 4, 4, 10, 0],
+                    'TIME' : [2, 3, 8, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+mar = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [4, 3, 10, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+apr = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [5, 4, 11, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+may = pd.DataFrame({'COUNT' : [5, 4, 4, 10, 0],
+                    'TIME' : [15, 4, 15, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+jun = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [7, 4, 14, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+jul = pd.DataFrame({'COUNT' : [6, 4, 4, 5, 0],
+                    'TIME' : [20, 4, 15, 2.5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+aug = pd.DataFrame({'COUNT' : [4, 4, 4, 5, 0],
+                    'TIME' : [14, 4, 14, 2.5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+sep = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [6, 4, 12, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+oct = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [5, 3, 10, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+nov = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
+                    'TIME' : [3, 3, 8, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
+dec = pd.DataFrame({'COUNT' : [1, 4, 4, 10, 0],
+                    'TIME' : [1, 3, 8, 5, 0]},
+                    index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
 
 # TARGE YTD, MTD
-target_ytd = min(3, mtd) * 1/6 * winter + max(0, mtd - 9) * 1/6 * winter + max(0, mtd - 3) * 1/6 * summer - max(0, mtd - 9) * 1/6 * summer
-target_mtd = 1/6 * winter
-if mtd in [4, 5, 6, 7, 8, 9]:
-    target_mtd = 1/6 * summer
+months = [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+target_mtd = months[mtd - 1]
+for i in range(mtd):
+    if i == 0:
+        target_ytd = months[i]
+    else:
+        target_ytd = target_ytd + months[i]
 
-target_ytd = target_ytd.reset_index(names = ['NAME'])
-target_mtd = target_mtd.reset_index(names = ['NAME'])
+for i in range(12):
+    if i == 0:
+        days = months[i]['COUNT']
+        days.name = str(i + 1)
+        hours = months[i]['TIME']
+        hours.name = str(i + 1)
+    else:
+        temp = months[i]['COUNT']
+        temp.name = str(i + 1)
+        days = pd.concat([days, temp], axis = 1)
+        temp = months[i]['TIME']
+        temp.name = str(i + 1)
+        hours = pd.concat([hours, temp], axis = 1)
+
+days['Total'] = days.sum(axis = 1)
+hours['Total'] = hours.sum(axis = 1)
+days.loc['Total'] = days.sum()
+hours.loc['Total'] = hours.sum()
+
+# days.to_csv('./target_days.csv', sep = ';')
+# hours.to_csv('./target_days.csv', sep = ';')
+# exit()
+
+target_ytd = target_ytd.reset_index()
+target_ytd.columns = ['NAME', 'COUNT', 'TIME']
+target_ytd = pd.concat([target_ytd, pd.DataFrame([['Total', target_ytd['COUNT'].sum(), target_ytd['TIME'].sum()]], columns = target_ytd.columns)], axis = 0)
+target_mtd = target_mtd.reset_index()
+target_mtd.columns = ['NAME', 'COUNT', 'TIME']
+target_mtd = pd.concat([target_mtd, pd.DataFrame([['Total', target_mtd['COUNT'].sum(), target_mtd['TIME'].sum()]], columns = target_mtd.columns)], axis = 0)
 
 #################
 ###   STATS   ###
 #################
 
 # STATUS YTD
-rides_ytd = rides_ytd[rides_ytd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DUREE']]
+rides_ytd = rides_ytd[rides_ytd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DATE', 'DUREE']]
 empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                      'DUREE' : [0, 0, 0, 0, 0]})
+                      'DATE' : [None, None, None, None, None],
+                      'DUREE' : [None, None, None, None, None]})
 rides_ytd = pd.concat([rides_ytd, empty], axis = 0)
-rides_ytd = rides_ytd.groupby(['NAME']).sum().reset_index().fillna(0)
+rides_ytd = rides_ytd.groupby(['NAME']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().fillna(0)
 total_ytd = pd.DataFrame({'NAME' : ['Total'],
+                          'DATE' : [rides_ytd['DATE'].sum()],
                           'DUREE' : [rides_ytd['DUREE'].sum()]})
 rides_ytd = pd.concat([rides_ytd, total_ytd], axis = 0)
 rides_ytd = pd.merge(target_ytd, rides_ytd, how = 'left', left_on = 'NAME', right_on = 'NAME')
-rides_ytd['STATUS'] = round(rides_ytd['DUREE'] - rides_ytd['TARGET'], 1)
+rides_ytd['JOURS'] = round(rides_ytd['DATE'] - rides_ytd['COUNT'], 1)
+rides_ytd['HEURES'] = round(rides_ytd['DUREE'] - rides_ytd['TIME'], 1)
 rides_ytd = rides_ytd.astype(str)
-status_ytd = rides_ytd[['NAME', 'STATUS']].copy().T
-status_ytd.index = ['Quand', 'Status']
+status_ytd = rides_ytd[['NAME', 'JOURS', 'HEURES']].copy().T
+status_ytd.index = [ytd, 'Jours', 'Heures']
 status_ytd = status_ytd.reset_index()
 status_ytd.columns = status_ytd.iloc[0].to_list()
 status_ytd = status_ytd.iloc[1:]
-status_ytd = status_ytd[['Quand', 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
+status_ytd = status_ytd[[ytd, 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
 
 # STATUS MTD
-rides_mtd = rides_mtd[rides_mtd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DUREE']]
+rides_mtd = rides_mtd[rides_mtd['NAME'].isin(['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])][['NAME', 'DATE', 'DUREE']]
 empty = pd.DataFrame({'NAME' : ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'],
-                      'DUREE' : [0, 0, 0, 0, 0]})
+                      'DATE' : [None, None, None, None, None],
+                      'DUREE' : [None, None, None, None, None]})
 rides_mtd = pd.concat([rides_mtd, empty], axis = 0)
-rides_mtd = rides_mtd.groupby(['NAME']).sum().reset_index().fillna(0)
+rides_mtd = rides_mtd.groupby(['NAME']).agg({'DATE' : 'nunique', 'DUREE' : 'sum'}).reset_index().fillna(0)
 total_mtd = pd.DataFrame({'NAME' : ['Total'],
+                          'DATE' : [rides_mtd['DATE'].sum()],
                           'DUREE' : [rides_mtd['DUREE'].sum()]})
-rides_mtd = pd.concat([rides_mtd, total_mtd], axis = 0) 
+rides_mtd = pd.concat([rides_mtd, total_mtd], axis = 0)
 rides_mtd = pd.merge(target_mtd, rides_mtd, how = 'left', left_on = 'NAME', right_on = 'NAME')
-rides_mtd['STATUS'] = round(rides_mtd['DUREE'] - rides_mtd['TARGET'], 1)
+rides_mtd['JOURS'] = round(rides_mtd['DATE'] - rides_mtd['COUNT'], 1)
+rides_mtd['HEURES'] = round(rides_mtd['DUREE'] - rides_mtd['TIME'], 1)
 rides_mtd = rides_mtd.astype(str)
-status_mtd = rides_mtd[['NAME', 'STATUS']].copy().T
-status_mtd.index = ['Quand', 'Status']
+status_mtd = rides_mtd[['NAME', 'JOURS', 'HEURES']].copy().T
+status_mtd.index = [mtd, 'Jours', 'Heures']
 status_mtd = status_mtd.reset_index()
 status_mtd.columns = status_mtd.iloc[0].to_list()
 status_mtd = status_mtd.iloc[1:]
-status_mtd = status_mtd[['Quand', 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
+status_mtd = status_mtd[[mtd, 'Total', 'WE', 'OFF', 'Afterwork', 'Velotaf', 'Lunch']]
 
 # PMC
 df = trips[['DATE', 'DUREE', 'DISTANCE', 'ELEVATION', 'GEAR']].copy()
@@ -218,7 +280,7 @@ pmc = pmc.fillna(0)
 pmc['ATL'] = 0.0
 pmc['CTL'] = 0.0
 pmc = pmc.sort_values(['DATE'])
-pmc = pmc.reset_index()
+# pmc = pmc.reset_index()
 for index, row in pmc.iterrows():
     if index != 0:
         pmc.at[index, 'ATL'] = pmc.at[index, 'TSS'] * (1 - math.exp(-1/7)) + pmc.at[index - 1, 'ATL'] * math.exp(-1/7)
@@ -234,8 +296,6 @@ rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
 
-print(pmc['DATE'].max())
-
 # Création du graphique
 graf = go.Figure()
 # graf.update_layout(title = 'PMC')
@@ -250,64 +310,6 @@ with open('pmc.png', 'rb') as file:
     msgImage_pmc = MIMEImage(file.read())
     msgImage_pmc.add_header('Content-ID', '<pmc>')
 
-# Tendance
-trend = pmc[['YYYY-MM', 'DATE', 'DUREE', 'ELEVATION', 'CTL', 'TSB+', 'TSB-', 'TSS']].copy()
-trend = trend.sort_values(['DATE'], ascending = True)
-trend['TSB'] = trend['TSB+'] + trend['TSB-']
-trend = trend[['YYYY-MM', 'DUREE', 'ELEVATION', 'DATE', 'CTL', 'TSB', 'TSB-', 'TSS']]
-trend['ON'] = 0
-trend.loc[trend['DUREE'] > 0, 'ON'] = 1
-trend[['>100TSS', '>150TSS', '>200TSS']] = [0, 0, 0]
-trend.loc[trend['TSS'] > 100, ['>100TSS', '>150TSS', '>200TSS']] = [1, 0, 0]
-trend.loc[trend['TSS'] > 150, ['>100TSS', '>150TSS', '>200TSS']] = [0, 1, 0]
-trend.loc[trend['TSS'] > 200, ['>100TSS', '>150TSS', '>200TSS']] = [0, 0, 1]
-trend = trend.groupby(['YYYY-MM']).agg({'DUREE' : 'sum',
-                                        'ELEVATION' : 'sum',
-                                        'DATE' : 'nunique',
-                                        'ON' : 'sum',
-                                        'CTL' : ['first', 'mean'],
-                                        'TSB' : 'mean',
-                                        'TSB-' : 'min',
-                                        '>100TSS' : 'sum',
-                                        '>150TSS' : 'sum',
-                                        '>200TSS' : 'sum',
-                                        'TSS' : 'max',}).reset_index()
-trend.columns = ['YYYY-MM', 'DUREE', 'ELEVATION', 'DAYS', 'ON', 'FstCTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
-trend['DUREE'] = round(trend['DUREE'], 1)
-trend['REST'] = round(trend['DAYS'] / trend['ON'], 1)
-if trend['ON'].iloc[-1] == 0:
-    trend['REST'].iloc[-1] = round(current_rest, 1)
-trend = trend.fillna(0)
-firstclt = trend['FstCTL'].to_list()
-lastclt = firstclt[1:]
-lastclt.append(pmc['CTL'].iloc[-1])
-trend['LstCTL'] = lastclt
-trend['CTL'] = trend['LstCTL'] - trend['FstCTL']
-trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS', 'ELEVATION']] = trend[['CTL', 'AvgCTL', 'AvgTSB', 'MinTSB', '>100TSS', '>150TSS', '>200TSS', 'maxTSS', 'ELEVATION']].astype(int)
-# Summit
-trend['EVEREST'] = round(trend['ELEVATION'] / everest, 1)
-trend['ELEVATION'] = trend['ELEVATION'] - montblanc
-trend['ELEVATION'] = trend['ELEVATION'].astype(str)
-trend.loc[trend['ELEVATION'] > str(montblanc - montblanc), 'ELEVATION'] = 'Mont Blanc'
-trend.loc[trend['ELEVATION'] > str(kilimandjaro - montblanc), 'ELEVATION'] = 'Kilimandjaro'
-trend.loc[trend['ELEVATION'] > str(aconcagua - montblanc), 'ELEVATION'] = 'Aconcagua'
-trend.loc[trend['ELEVATION'] > str(everest - montblanc), 'ELEVATION'] = 'Everest (x' + trend['EVEREST'].astype(str) + ')'
-trend = trend.astype(str)
-
-trend_1 = trend[['YYYY-MM', 'DUREE', 'AvgCTL', 'CTL', 'REST', 'AvgTSB', 'MinTSB']].copy()
-trend_1 = trend_1.T
-trend_1.index = ['YYYY-MM', 'Heures', 'avgCTL', 'gapCTL', 'Repos', 'avgTSB', 'minTSB']
-trend_1 = trend_1.reset_index()
-trend_1.columns = trend_1.iloc[0].to_list()
-trend_1 = trend_1.iloc[1:]
-
-trend_2 = trend[['YYYY-MM', 'ELEVATION', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']].copy()
-trend_2 = trend_2.T
-trend_2.index = ['YYYY-MM', 'Sommet', '>100TSS', '>150TSS', '>200TSS', 'maxTSS']
-trend_2 = trend_2.reset_index()
-trend_2.columns = trend_2.iloc[0].to_list()
-trend_2 = trend_2.iloc[1:]
-
 #############
 ### EMAIL ###
 #############
@@ -316,13 +318,10 @@ trend_2 = trend_2.iloc[1:]
 msg = """
 <strong>Etat du mois en cours</strong> : {}<br>
 <strong>Etat de l'année en cours</strong> : {}<br>
-<strong>Tendance des derniers mois</strong> : {}{}<br>
 <img src='cid:pmc'><br>
 
 """.format(build_table(status_mtd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
-           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'),
-           build_table(trend_2, 'blue_light', font_size = '12px', text_align = 'center', width = '84px'),
-           build_table(trend_1, 'blue_light', font_size = '12px', text_align = 'center', width = '84px'))
+           build_table(status_ytd, 'blue_light', font_size = '12px', text_align = 'center', width = '60px'))
 
 msgtext = MIMEText(msg, 'html')
 

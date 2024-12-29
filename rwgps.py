@@ -113,41 +113,41 @@ current_rest = (dt.date.today() - trips['DATE'].sort_values(ascending = True).il
 ###################
 
 # 6 MONTH SEASONS' TARGETS
-jan = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [3, 3, 8, 5, 0]},
+jan = pd.DataFrame({'COUNT' : [1, 4, 4, 8, 0],
+                    'TIME' : [1, 3, 6, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-feb = pd.DataFrame({'COUNT' : [1, 4, 4, 10, 0],
-                    'TIME' : [2, 3, 8, 5, 0]},
+feb = pd.DataFrame({'COUNT' : [1, 4, 4, 8, 0],
+                    'TIME' : [1, 3, 6, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-mar = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [4, 3, 10, 5, 0]},
+mar = pd.DataFrame({'COUNT' : [2, 4, 4, 8, 0],
+                    'TIME' : [4, 3, 8, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-apr = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [5, 4, 11, 5, 0]},
+apr = pd.DataFrame({'COUNT' : [2, 4, 4, 8, 0],
+                    'TIME' : [5, 4, 12, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-may = pd.DataFrame({'COUNT' : [5, 4, 4, 10, 0],
-                    'TIME' : [15, 4, 15, 5, 0]},
+may = pd.DataFrame({'COUNT' : [5, 4, 4, 5, 0],
+                    'TIME' : [15, 6, 12, 5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-jun = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [7, 4, 14, 5, 0]},
+jun = pd.DataFrame({'COUNT' : [2, 4, 4, 8, 0],
+                    'TIME' : [7, 6, 12, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-jul = pd.DataFrame({'COUNT' : [6, 4, 4, 5, 0],
-                    'TIME' : [20, 4, 15, 2.5, 0]},
+jul = pd.DataFrame({'COUNT' : [6, 2, 4, 5, 0],
+                    'TIME' : [15, 6, 10, 5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-aug = pd.DataFrame({'COUNT' : [4, 4, 4, 5, 0],
-                    'TIME' : [14, 4, 14, 2.5, 0]},
+aug = pd.DataFrame({'COUNT' : [4, 2, 4, 5, 0],
+                    'TIME' : [12, 6, 10, 5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-sep = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [6, 4, 12, 5, 0]},
+sep = pd.DataFrame({'COUNT' : [2, 4, 4, 8, 0],
+                    'TIME' : [6, 6, 10, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-oct = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [5, 3, 10, 5, 0]},
+oct = pd.DataFrame({'COUNT' : [2, 4, 4, 8, 0],
+                    'TIME' : [5, 4, 10, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-nov = pd.DataFrame({'COUNT' : [2, 4, 4, 10, 0],
-                    'TIME' : [3, 3, 8, 5, 0]},
+nov = pd.DataFrame({'COUNT' : [1, 4, 4, 8, 0],
+                    'TIME' : [1, 3, 8, 7.5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
-dec = pd.DataFrame({'COUNT' : [1, 4, 4, 10, 0],
-                    'TIME' : [1, 3, 8, 5, 0]},
+dec = pd.DataFrame({'COUNT' : [1, 3, 4, 5, 0],
+                    'TIME' : [1, 3, 6, 5, 0]},
                     index = ['OFF', 'Afterwork', 'WE', 'Velotaf', 'Lunch'])
 
 # TARGE YTD, MTD

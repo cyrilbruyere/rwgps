@@ -208,6 +208,8 @@ rides_ytd = pd.merge(target_ytd, rides_ytd, how = 'left', left_on = 'NAME', righ
 rides_ytd['JOURS'] = round(rides_ytd['DATE'] - rides_ytd['COUNT'], 1)
 rides_ytd['HEURES'] = round(rides_ytd['DUREE'] - rides_ytd['TIME'], 1)
 rides_ytd = rides_ytd.astype(str)
+rides_ytd['JOURS'] = rides_ytd['JOURS'] + ' j'
+rides_ytd['HEURES'] = rides_ytd['HEURES'] + ' h'
 status_ytd = rides_ytd[['NAME', 'JOURS', 'HEURES']].copy().T
 status_ytd.index = [ytd, 'Jours', 'Heures']
 status_ytd = status_ytd.reset_index()
@@ -230,6 +232,8 @@ rides_mtd = pd.merge(target_mtd, rides_mtd, how = 'left', left_on = 'NAME', righ
 rides_mtd['JOURS'] = round(rides_mtd['DATE'] - rides_mtd['COUNT'], 1)
 rides_mtd['HEURES'] = round(rides_mtd['DUREE'] - rides_mtd['TIME'], 1)
 rides_mtd = rides_mtd.astype(str)
+rides_mtd['JOURS'] = rides_mtd['JOURS'] + ' j'
+rides_mtd['HEURES'] = rides_mtd['HEURES'] + ' h'
 status_mtd = rides_mtd[['NAME', 'JOURS', 'HEURES']].copy().T
 status_mtd.index = [mtd, 'Jours', 'Heures']
 status_mtd = status_mtd.reset_index()

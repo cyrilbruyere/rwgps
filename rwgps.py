@@ -307,7 +307,7 @@ graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines'
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy', name = 'TSB-'))
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
 
-graf.write_image('pmc.png', engine="kaleido")
+graf.write_image('pmc.png')
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:

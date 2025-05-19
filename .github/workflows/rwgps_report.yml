@@ -16,6 +16,7 @@ jobs:
       - name: install packages
         run: |
           pip install -r requirements.txt
+          pip install kaleido
       - name: run rwgps
         env:
           user_email: ${{ secrets.user_email }}

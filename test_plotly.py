@@ -6,9 +6,6 @@ import os
 print("✅ Plotly version :", plotly.__version__)
 print("✅ Backend de rendu :", pio.renderers.default)
 
-# 🔧 Forcer kaleido
-pio.renderers.default = "kaleido"
-
 try:
     _ = pio.kaleido.scope
     print("✅ Kaleido est fonctionnel")

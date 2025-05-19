@@ -309,6 +309,9 @@ graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines
 
 graf.write_image('pmc.png')
 
+if not os.path.exists("pmc.png"):
+    raise RuntimeError("Échec de la génération de l'image avec Plotly")
+
 # Images à envoyer
 with open('pmc.png', 'rb') as file:
     msgImage_pmc = MIMEImage(file.read())

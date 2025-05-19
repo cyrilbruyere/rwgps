@@ -1,4 +1,10 @@
 import plotly.express as px
+from pathlib import Path
+import os
+
+# 1) Informations sur le dossier courant
+cwd = Path.cwd()
+print(f"Répertoire courant : {cwd}")
 
 fig = px.scatter(x=[1, 2, 3], y=[3, 1, 6])
 

@@ -2,19 +2,19 @@ name : rwgps_report
 
 on:
   schedule:
-    - cron : '0 14 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-python@main
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.x
+          python-version: 3.9
       - name: install packages
-        run:
+        run: |
           pip install -r requirements.txt
       - name: run rwgps
         env:

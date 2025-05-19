@@ -1,18 +1,19 @@
 import plotly.express as px
 import plotly.io as pio
+import plotly
 import os
 
-print("✅ Test plotly version :", px.__version__)
+print("✅ Plotly version :", plotly.__version__)
 print("✅ Backend de rendu :", pio.renderers.default)
 
-# 🔍 Vérifie que kaleido est bien installé
+# 🔍 Vérifie si Kaleido fonctionne
 try:
-    pio.kaleido.scope
+    _ = pio.kaleido.scope
     print("✅ Kaleido est disponible")
 except Exception as e:
     print("❌ Kaleido est manquant ou non fonctionnel :", e)
 
-# 🖼️ Test d’écriture
+# 🖼️ Test de génération de fichier
 fig = px.scatter(x=[1, 2, 3], y=[4, 5, 6])
 fig.write_image("test_plot.png")
 

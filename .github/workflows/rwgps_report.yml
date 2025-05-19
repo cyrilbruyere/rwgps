@@ -25,3 +25,8 @@ jobs:
           url_user: ${{ secrets.url_user }}
           url_trips: ${{ secrets.url_trips }}
         run: python rwgps.py
+
+      - name: Debug files
+        run: |
+          echo "Fichiers présents :"
+          ls -alh

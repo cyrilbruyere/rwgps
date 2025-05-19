@@ -16,6 +16,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 import os
+# Force kaleido
+import plotly.io as pio
+pio.kaleido.scope.default_format = "png"
+pio.kaleido.scope.default_width = 800
+pio.kaleido.scope.default_height = 600
 
 ###################
 ###   SETTING   ###

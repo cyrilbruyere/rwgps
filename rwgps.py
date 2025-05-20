@@ -16,11 +16,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 import os
-# Force kaleido
-import plotly.io as pio
-pio.kaleido.scope.default_format = "png"
-pio.kaleido.scope.default_width = 800
-pio.kaleido.scope.default_height = 600
 
 ###################
 ###   SETTING   ###
@@ -313,9 +308,6 @@ graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines
 graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
 
 graf.write_image('pmc.png')
-
-if not os.path.exists("pmc.png"):
-    raise RuntimeError("Échec de la génération de l'image avec Plotly")
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:

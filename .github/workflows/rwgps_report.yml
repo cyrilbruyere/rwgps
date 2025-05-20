@@ -10,23 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcairo2
-
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: install packages
         run: |
           pip install -r requirements.txt
-          pip install kaleido
-      - name: Test plotly image export
-        run: |
-          python test_plotly.py
-          ls -lh
       - name: run rwgps
         env:
           user_email: ${{ secrets.user_email }}
@@ -36,8 +25,3 @@ jobs:
           url_user: ${{ secrets.url_user }}
           url_trips: ${{ secrets.url_trips }}
         run: python rwgps.py
-
-      - name: Debug files
-        run: |
-          echo "Fichiers présents :"
-          ls -alh

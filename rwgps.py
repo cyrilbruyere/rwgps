@@ -311,7 +311,7 @@ pmc = pmc[pmc['DATE'] > rolling_months]
 # graf.write_image('pmc.png')
 
 # Avec Matplotlib
-ax = pmc.plot.area(x = 'DATE', y = ['TSB-', 'TSB+', 'CTL'], stacked = False, color = ['r', 'v', 'b']) # None
+ax = pmc.plot.area(x = 'DATE', y = ['TSB-', 'TSB+', 'CTL'], stacked = False, color = ['r', 'g', 'b']) # None
 fig = ax.get_figure()
 graf.savefig("pmc.png")
 

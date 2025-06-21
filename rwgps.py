@@ -4,8 +4,8 @@ import requests
 import numpy as np
 import pandas as pd
 # Graphics
-import plotly.express as px
-import plotly.graph_objects as go
+# import plotly.express as px
+# import plotly.graph_objects as go
 from pretty_html_table import build_table
 # Built in
 import datetime as dt

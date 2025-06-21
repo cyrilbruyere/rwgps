@@ -300,14 +300,20 @@ rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
 
-# Création du graphique
-graf = go.Figure()
-# graf.update_layout(title = 'PMC')
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy', name = 'TSB-'))
-graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
+# # Création du graphique
+# graf = go.Figure()
+# # graf.update_layout(title = 'PMC')
+# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
+# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy', name = 'TSB-'))
+# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
 
-graf.write_image('pmc.png')
+# graf.write_image('pmc.png')
+
+# Avec Matplotlib
+ax = pmc.plot.area(x = 'DATE', y = ['TSB-', 'TSB+', 'CTL'], stacked = False, color = ['r', 'v', 'b']) # None
+fig = ax.get_figure()
+graf.savefig("pmc.png")
+
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:

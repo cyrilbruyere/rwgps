@@ -4,6 +4,7 @@ import requests
 import numpy as np
 import pandas as pd
 # Graphics
+import matplotlib.pyplot as plt
 # import plotly.express as px
 # import plotly.graph_objects as go
 from pretty_html_table import build_table

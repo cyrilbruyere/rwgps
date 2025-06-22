@@ -312,9 +312,9 @@ pmc = pmc[pmc['DATE'] > rolling_months]
 
 # Avec Matplotlib
 # plt.area(y = pmc['TSB-', 'TSB+'].values, stacked = False, color = ['r', 'g'])
-plt.plot(x = pmc['DATE'].values, y = pmc['CTL'].values, color = 'b', linewidth = 2)
-plt.fill_between(pmc['DATE'].values, pmc['TSB-'].values, color = 'r')
-plt.fill_between(pmc['DATE'].values, pmc['TSB+'].values, color = 'g')
+plt.plot(pmc['CTL'].values, color = 'b', linewidth = 2)
+plt.fill_between(pmc['TSB-'].values, color = 'r')
+plt.fill_between(pmc['TSB+'].values, color = 'g')
 plt.savefig("pmc.png")
 
 # Images à envoyer

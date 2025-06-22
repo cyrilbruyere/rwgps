@@ -311,12 +311,10 @@ pmc = pmc[pmc['DATE'] > rolling_months]
 # graf.write_image('pmc.png')
 
 # Avec Matplotlib
-ax = pmc.plot.area(x = 'DATE', y = ['TSB-', 'TSB+'], stacked = False, color = ['r', 'g'])
-ax = pmc.plot.line(x = 'DATE', y = ['CTL'], color = 'b', linewidth = 2)
-ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation = 90, ha = 'right')
-fig = ax.get_figure()
-fig.savefig("pmc.png")
-
+plt.plot.area(y = pmc['TSB-', 'TSB+'].values, stacked = False, color = ['r', 'g'])
+plt.plot(y = pmc['CTL'].values, color = 'b', linewidth = 2)
+plt.set_xticks(plt.get_xticks(), plt.get_xticklabels(), rotation = 90, ha = 'right')
+plt.savefig("pmc.png")
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:

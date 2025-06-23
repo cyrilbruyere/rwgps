@@ -300,15 +300,7 @@ rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
 
-# # Création du graphique
-# plt.plot(pd.to_datetime(pmc['DATE']).values, pmc['CTL'].values, color = 'b', linewidth = 2)
-# plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB-'].values, color = 'r')
-# plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB+'].values, color = 'g')
-# plt.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 7)))
-# plt.xticks(rotation = 90)
-# plt.grid()
-# plt.locator_params(axis='x', nbins = 7)
-# plt.savefig("pmc.png")
+# Création du graphique
 fig, ax = plt.subplots()
 ax.plot(pd.to_datetime(pmc['DATE']).values, pmc['CTL'].values, color = 'b', linewidth = 2)
 ax.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB-'].values, color = 'r')

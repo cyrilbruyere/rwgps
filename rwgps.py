@@ -311,11 +311,11 @@ pmc = pmc[pmc['DATE'] > rolling_months]
 # graf.write_image('pmc.png')
 
 # Avec Matplotlib
-plt.plot(pd.to_datetime(pmc['DATE']).values, pmc['CTL'].values, color = 'b', linewidth = 2)
-plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB-'].values, color = 'r')
-plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB+'].values, color = 'g')
+plt.plot(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['CTL'].values, color = 'b', linewidth = 2)
+plt.fill_between(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['TSB-'].values, color = 'r')
+plt.fill_between(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['TSB+'].values, color = 'g')
 plt.xticks(rotation = 90)
-plt.grid(axis = 'y')
+plt.grid()
 plt.locator_params(axis='x', nbins = 7)
 plt.savefig("pmc.png")
 

@@ -311,7 +311,7 @@ pmc = pmc[pmc['DATE'] > rolling_months]
 # graf.write_image('pmc.png')
 
 # Avec Matplotlib
-plt.plot(pmc['DATE'].values, pmc['CTL'].values, color = 'b', linewidth = 2)
+plt.plot(pmc['DATE'].str[-5:].values, pmc['CTL'].values, color = 'b', linewidth = 2)
 plt.fill_between(pmc['DATE'].str[-5:].values, pmc['TSB-'].values, color = 'r')
 plt.fill_between(pmc['DATE'].str[-5:].values, pmc['TSB+'].values, color = 'g')
 plt.xticks(rotation = 90)

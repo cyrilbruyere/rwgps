@@ -5,8 +5,7 @@ import numpy as np
 import pandas as pd
 # Graphics
 import matplotlib.pyplot as plt
-# import plotly.express as px
-# import plotly.graph_objects as go
+import matplotlib.dates as mdates
 from pretty_html_table import build_table
 # Built in
 import datetime as dt
@@ -302,22 +301,24 @@ rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfil
 pmc = pmc[pmc['DATE'] > rolling_months]
 
 # # Création du graphique
-# graf = go.Figure()
-# # graf.update_layout(title = 'PMC')
-# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['CTL'].values, mode = 'lines', name = 'CTL'))
-# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB-'].values, mode = 'lines', fill='tozeroy', name = 'TSB-'))
-# graf.add_trace(go.Scatter(x = pmc['DATE'], y = pmc['TSB+'].values, mode = 'lines', fill='tozeroy', name = 'TSB+'))
+# plt.plot(pd.to_datetime(pmc['DATE']).values, pmc['CTL'].values, color = 'b', linewidth = 2)
+# plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB-'].values, color = 'r')
+# plt.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB+'].values, color = 'g')
+# plt.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 7)))
+# plt.xticks(rotation = 90)
+# plt.grid()
+# plt.locator_params(axis='x', nbins = 7)
+# plt.savefig("pmc.png")
+fig, ax = plt.subplots()
+ax.plot(pd.to_datetime(pmc['DATE']).values, pmc['CTL'].values, color = 'b', linewidth = 2)
+ax.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB-'].values, color = 'r')
+ax.fill_between(pd.to_datetime(pmc['DATE']).values, pmc['TSB+'].values, color = 'g')
+ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
+ax.xaxis.set_minor_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%-m'))
+ax.grid()
+fig.savefig("pmc.png")
 
-# graf.write_image('pmc.png')
-
-# Avec Matplotlib
-plt.plot(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['CTL'].values, color = 'b', linewidth = 2)
-plt.fill_between(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['TSB-'].values, color = 'r')
-plt.fill_between(pd.to_datetime(pmc['DATE']).dt.day.values, pmc['TSB+'].values, color = 'g')
-plt.xticks(rotation = 90)
-plt.grid()
-plt.locator_params(axis='x', nbins = 7)
-plt.savefig("pmc.png")
 
 # Images à envoyer
 with open('pmc.png', 'rb') as file:

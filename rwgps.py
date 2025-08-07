@@ -296,7 +296,7 @@ for index, row in pmc.iterrows():
 pmc['TSB+'] = pmc.apply(lambda x: max(x['CTL'] - x['ATL'], 0), axis = 1)
 pmc['TSB-'] = pmc.apply(lambda x: min(x['CTL'] - x['ATL'], 0), axis = 1)
 
-rolling_months = (edate - relativedelta(months = 4)).replace(day = 1)
+rolling_months = (edate - relativedelta(months = 12)).replace(day = 1)
 rolling_months = str(rolling_months.year) + '-' + str(rolling_months.month).zfill(2) + '-' + str(rolling_months.day).zfill(2)
 pmc = pmc[pmc['DATE'] > rolling_months]
 
